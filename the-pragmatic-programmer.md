@@ -38,4 +38,26 @@
 
 ### Orthogonality
 
-- **Orthogomality** in programming: operations change just one thing without affecting others
+- **Orthogomality** in programming: Two or more things are orthogonal if changes in one do not affect any of the others
+- Benefits
+  1. Increased productivity
+    - Changes are localized
+    - Promotes reuse
+    - Get more functionality per unit effort by combining orthogonal components
+  2. Reduced risk
+    - Diseased sections of code are isolated
+    - The resulting system is less fragile
+    - Better tested
+    - Won't be tightly tied to a particular thing (eg. vendor, product, or platform)
+- Orthogonality is also important for projects team
+  - When teams are organized with lots of overlap, members are confused about responsibilities
+- Design
+  - Layer system is powerful way to design orthogonal systems
+    - Each layer uses only the abstractions provided by the layers below it
+  - Ask yourself "If I dramatically change the requirements behind a particular function, how many modules are affected"
+    - In an orthogonal system, the answer should be "one"
+  - Ask yourself how decoupled your design is from changes in the real world
+    - Don't rely on the properties of things you can't control (eg. don't use the telephone as customer id)
+- Toolkits and Libararies
+  - When you bring in a toolkit, ask yourself whether it imposes changes on your code that shouldn’t be there
+    - Isolate the imposed change will make it easier (eg. EJB transaction related logic, AOP logging)
