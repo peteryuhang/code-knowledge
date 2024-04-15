@@ -38,7 +38,7 @@
 
 ### Orthogonality
 
-- **Orthogomality** in programming: Two or more things are orthogonal if changes in one do not affect any of the others
+- **Orthogonality** in programming: Two or more things are orthogonal if changes in one do not affect any of the others
 - Benefits
   1. Increased productivity
     - Changes are localized
@@ -61,3 +61,19 @@
 - Toolkits and Libararies
   - When you bring in a toolkit, ask yourself whether it imposes changes on your code that shouldn’t be there
     - Isolate the imposed change will make it easier (eg. EJB transaction related logic, AOP logging)
+- Code
+  - Keep your code decoupled
+    - eg. If you need to change an object’s state, get the object to do it for you
+  - Avoid global data
+    - eg. Singleton pattern
+    - Your code is easier to understand and maintain if you explicitly pass any required context into your modules
+  - Avoid similar functions
+    - Can check strategy pattern for a better implementation
+- Testing
+  - Module level (or unit) testing is considerably easier to specify and perform than integration testing
+  - Building unit tests is itself an interesting test of orthogonality
+  - Bug fixing is also a good time to assess the orthogonality of the system as a whole
+- Documentation
+  - The axes are content and presentation
+  - With truly orthogonal documentation, you should be able to change the appearance dramatically without changing the content
+- Orthogonality is closely related to the **DRY** principle
