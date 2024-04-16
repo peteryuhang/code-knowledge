@@ -77,3 +77,8 @@
   - The axes are content and presentation
   - With truly orthogonal documentation, you should be able to change the appearance dramatically without changing the content
 - Orthogonality is closely related to the **DRY** principle
+
+### Reversibility
+
+- There are no final decisions
+- Hide a third-party product behind a well-defined, abstract interface
