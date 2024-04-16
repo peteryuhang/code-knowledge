@@ -414,3 +414,200 @@ default:
   // unknown error
 }
 ```
+
+## Go 编程模式：Functional Options
+
+- 在编程中我们会遇到配置选项问题，比如下面的 `Addr` 和 `Port` 为必选，其他可选：
+
+```go
+type Server struct {
+  Addr     string
+  Port     int
+  Protocol string
+  Timeout  time.Duration
+  MaxConns int
+  TLS      *tls.Config
+}
+```
+
+- 针对这样的配置，我们需要有不同的创建函数：
+
+```go
+func NewDefaultServer(addr string, port int) (*Server, error) {
+  return &Server{addr, port, "tcp", 30 * time.Second, 100, nil}, nil
+}
+
+func NewTLSServer(addr string, port int, tls *tls.Config) (*Server, error) {
+  return &Server{addr, port, "tcp", 30 * time.Second, 100, tls}, nil
+}
+
+func NewServerWithTimeout(addr string, port int, timeout time.Duration) (*Server, error) {
+  return &Server{addr, port, "tcp", timeout, 100, nil}, nil
+}
+
+func NewTLSServerWithMaxConnAndTimeout(addr string, port int, maxconns int, timeout time.Duration, tls *tls.Config) (*Server, error) {
+  return &Server{addr, port, "tcp", 30 * time.Second, maxconns, tls}, nil
+}
+```
+
+### 组合嵌套
+
+- 这及其不灵活，也不利于管理
+
+- 我们可以考虑配置对象的方案，将非必需的选项都放到一个结构中，然后使用嵌套的方式来组合：
+
+```go
+type Config struct {
+  Protocol string
+  Timeout  time.Duration
+  Maxconns int
+  TLS      *tls.Config
+}
+
+type Server struct {
+  Addr string
+  Port int
+  Conf *Config
+}
+```
+
+- 这样我们就仅需要一个 `NewServer()` 函数来构造对象：
+
+```go
+func NewServer(addr string, port int, conf *Config) (*Server, error) {
+    //...
+}
+
+//Using the default configuratrion
+srv1, _ := NewServer("localhost", 9000, nil) 
+
+conf := ServerConfig{Protocol:"tcp", Timeout: 60*time.Duration}
+srv2, _ := NewServer("locahost", 9000, &conf)
+```
+
+### Builder 模式
+
+- 上面的代码中，我们还需要对 `Config` 进行判空，代码还是不太 “干净”
+
+- 可以考虑仿照 Java 中的 Builder 设计模式：
+
+```go
+// 使用一个 builder 类来做包装
+type ServerBuilder struct {
+  Server
+}
+
+func (sb *ServerBuilder) Create(addr string, port int) *ServerBuilder {
+  sb.Server.Addr = addr
+  sb.Server.Port = port
+  // 其它代码设置其它成员的默认值
+  return sb
+}
+
+func (sb *ServerBuilder) WithProtocol(protocol string) *ServerBuilder {
+  sb.Server.Protocol = protocol 
+  return sb
+}
+
+func (sb *ServerBuilder) WithMaxConn( maxconn int) *ServerBuilder {
+  sb.Server.MaxConns = maxconn
+  return sb
+}
+
+func (sb *ServerBuilder) WithTimeOut( timeout time.Duration) *ServerBuilder {
+  sb.Server.Timeout = timeout
+  return sb
+}
+
+func (sb *ServerBuilder) WithTLS( tls *tls.Config) *ServerBuilder {
+  sb.Server.TLS = tls
+  return sb
+}
+
+func (sb *ServerBuilder) Build() (Server) {
+  return  sb.Server
+}
+```
+
+- 这样一来就可以用 **链式函数调用的方式** 来构建了
+
+```go
+sb := ServerBuilder{}
+server, err := sb.Create("127.0.0.1", 8080).
+  WithProtocol("udp").
+  WithMaxConn(1024).
+  WithTimeOut(30*time.Second).
+  Build()
+```
+
+### Functional Options
+
+- 使用 Builder 的方式需要多加一个 Builder 类，不然错误处理会比较麻烦，如果我们想要省去这个包装结构体，就需要考虑 **函数式编程** 了
+
+- 定义一个函数类型：
+
+```go
+type Option func(*Server)
+```
+
+- 然后使用函数式的方式定义一组函数：
+
+```go
+func Protocol(p string) Option {
+  return func(s *Server) {
+    s.Protocol = p
+  }
+}
+func Timeout(timeout time.Duration) Option {
+  return func(s *Server) {
+    s.Timeout = timeout
+  }
+}
+func MaxConns(maxconns int) Option {
+  return func(s *Server) {
+    s.MaxConns = maxconns
+  }
+}
+func TLS(tls *tls.Config) Option {
+  return func(s *Server) {
+    s.TLS = tls
+  }
+}
+```
+
+- 在数学上，这样的函数被称作 **高阶函数**，就是对原有函数进行包装后返回
+- 我们可以基于此定义类似前面的 `NewServer()` 函数，进行对象的创建：
+
+```go
+func NewServer(addr string, port int, options ...func(*Server)) (*Server, error) {
+  srv := Server{
+    Addr:     addr,
+    Port:     port,
+    Protocol: "tcp",
+    Timeout:  30 * time.Second,
+    MaxConns: 1000,
+    TLS:      nil,
+  }
+  for _, option := range options {
+    option(&srv)
+  }
+  //...
+  return &srv, nil
+}
+```
+
+- 就可以像如下这样进行对象的创建：
+
+```go
+s1, _ := NewServer("localhost", 1024)
+s2, _ := NewServer("localhost", 2048, Protocol("udp"))
+s3, _ := NewServer("0.0.0.0", 8080, Timeout(300*time.Second), MaxConns(1000))
+```
+
+- 这种方式的 6 大好处
+  - 直觉式的编程
+  - 高度的可配置化
+  - 很容易维护和扩展
+  - 自文档
+  - 新来的人很容易上手
+  - 没有什么令人困惑的事（是 `nil` 还是空）
