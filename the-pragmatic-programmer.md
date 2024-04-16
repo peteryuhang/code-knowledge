@@ -82,3 +82,16 @@
 
 - There are no final decisions
 - Hide a third-party product behind a well-defined, abstract interface
+
+### Tracer Bullets
+
+- Use tracer bullets to find the target
+- Tracer code approach: Initially simply achieved an end-to-end connection among the components of your system
+- Beneifits;
+  - Users get to see something working early
+  - Developers build a structure to work in
+  - You have an integration platform
+  - You have something to demonstrate
+  - You have a better feel for progress
+- Tracer bullets might bot always hit target, you then adjust your aim until they're on target
+- Think of prototyping as the reconnaissance and intelligence gathering that takes place before a single tracer bullet is fired
