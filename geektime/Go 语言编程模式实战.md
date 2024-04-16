@@ -220,3 +220,197 @@ func main() {
 - 对于在 for-loop 里的固定的正则表达式，一定要使用 `regexp.Compile()` 编译正则表达式。性能会提升两个数量级
 - 如果你需要更高性能的协议，就要考虑使用 `protobuf` 或 `msgp` 而不是 JSON，因为 JSON 的序列化和反序列化里使用了反射
 - 你在使用 Map 的时候，使用整型的 key 会比字符串的要快，因为整型比较比字符串比较要快
+
+## 错误处理
+
+- Go 语言的错误处理的方式，本质上是类似 C 语言的返回值检查，但是它也兼顾了异常的一些好处——对错误的扩展
+- Error Check Hell：
+
+```go
+func parse(r io.Reader) (*Point, error) {
+  var p Point
+
+  if err := binary.Read(r, binary.BigEndian, &p.Longitude); err != nil {
+    return nil, err
+  }
+  if err := binary.Read(r, binary.BigEndian, &p.Latitude); err != nil {
+    return nil, err
+  }
+  if err := binary.Read(r, binary.BigEndian, &p.Distance); err != nil {
+    return nil, err
+  }
+  if err := binary.Read(r, binary.BigEndian, &p.ElevationGain); err != nil {
+    return nil, err
+  }
+  if err := binary.Read(r, binary.BigEndian, &p.ElevationLoss); err != nil {
+    return nil, err
+  }
+}
+```
+
+- 可以通过函数式编程的方式将代码改成下面这样：
+
+```go
+func parse(r io.Reader) (*Point, error) {
+  var p Point
+  var err error
+  read := func(data interface{}) {
+    if err != nil {
+      return
+    }
+    err = binary.Read(r, binary.BigEndian, data)
+  }
+
+  read(&p.Longitude)
+  read(&p.Latitude)
+  read(&p.Distance)
+  read(&p.ElevationGain)
+  read(&p.ElevationLoss)
+
+  if err != nil {
+    return &p, err
+  }
+  return &p, nil
+}
+```
+
+- 进一步，我们可以模仿 `bufio.Scanner()` 的方式，这样业务逻辑会更加 “干净”：
+
+```go
+type Reader struct {
+  r   io.Reader
+  err error
+}
+
+func (r *Reader) read(data interface{}) {
+  if r.err == nil {
+    r.err = binary.Read(r.r, binary.BigEndian, data)
+  }
+}
+
+func parse(input io.Reader) (*Point, error) {
+  var p Point
+  r := Reader{r: input}
+
+  r.read(&p.Longitude)
+  r.read(&p.Latitude)
+  r.read(&p.Distance)
+  r.read(&p.ElevationGain)
+  r.read(&p.ElevationLoss)
+
+  if r.err != nil {
+    return nil, r.err
+  }
+
+  return &p, nil
+}
+```
+
+- 有了这些，**流式接口（Fluent Interface）** 也就很容易处理了：
+
+```go
+package main
+
+import (
+  "bytes"
+  "encoding/binary"
+  "fmt"
+)
+
+// 长度不够，少一个Weight
+var b = []byte {0x48, 0x61, 0x6f, 0x20, 0x43, 0x68, 0x65, 0x6e, 0x00, 0x00, 0x2c} 
+var r = bytes.NewReader(b)
+
+type Person struct {
+  Name [10]byte
+  Age uint8
+  Weight uint8
+  err error
+}
+func (p *Person) read(data interface{}) {
+  if p.err == nil {
+    p.err = binary.Read(r, binary.BigEndian, data)
+  }
+}
+
+func (p *Person) ReadName() *Person {
+  p.read(&p.Name) 
+  return p
+}
+func (p *Person) ReadAge() *Person {
+  p.read(&p.Age) 
+  return p
+}
+func (p *Person) ReadWeight() *Person {
+  p.read(&p.Weight) 
+  return p
+}
+func (p *Person) Print() *Person {
+  if p.err == nil {
+    fmt.Printf("Name=%s, Age=%d, Weight=%d\n",p.Name, p.Age, p.Weight)
+  }
+  return p
+}
+
+func main() {   
+  p := Person{}
+  p.ReadName().ReadAge().ReadWeight().Print()
+  fmt.Println(p.err)  // EOF 错误
+}
+```
+
+- 不过这个错误处理的技巧的使用条件是有限的，只能对同一个业务对象的不断操作进行简化，而多个业务对象则还是需要 `if err != nil`
+
+### 包装错误
+
+- 通常会在接收到错误后，添加些上下文再返回到上层，一般的做法如下：
+
+```go
+if err != nil {
+  return fmt.Errorf("something failed: %v", err)
+}
+```
+
+- 另外一个普遍的做法是将错误包装在另一个错误中，同时保留原始内容
+
+```go
+type authorizationError struct {
+  operation string
+  err error   // 原始错误
+}
+
+func (e *authorizationError) Error() string {
+  return fmt.Sprintf("authorization failed during %s: %v", e.operation, e.err)
+}
+```
+
+- 更好的方式是通过一种标准的访问方法，我们最好使用一个接口：
+
+```go
+type causer interface {
+  Cause() error
+}
+
+func (e *authorizationError) Cause() error {
+  return e.err
+}
+```
+
+- 有一个第三方错误库专门负责这事，由于使用很广，基本上是事实的标准：
+
+```go
+import "github.com/pkg/errors"
+
+//错误包装
+if err != nil {
+  return errors.Wrap(err, "read failed")
+}
+
+// Cause 接口
+switch err := errors.Cause(err).(type) {
+case *MyError:
+  // handle specifically
+default:
+  // unknown error
+}
+```
