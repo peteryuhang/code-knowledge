@@ -86,3 +86,100 @@ func main() {
 }
 ```
 
+### 接口编程
+
+- 下面为初始代码：
+
+```go
+type Country struct {
+  Name string
+}
+
+type City struct {
+  Name string
+}
+
+type Printable interface {
+  PrintStr()
+}
+
+func (c Country) PrintStr() {
+  fmt.Println(c.Name)
+}
+func (c City) PrintStr() {
+  fmt.Println(c.Name)
+}
+
+c1 := Country {"China"}
+c2 := City {"Beijing"}
+c1.PrintStr()
+c2.PrintStr()
+```
+
+- 这里定义了接口 `Printable` 但是并没有很好地利用，可以通过 **结构体嵌入** 来完善：
+
+```go
+type WithName struct {
+  Name string
+}
+
+type Country struct {
+  WithName
+}
+
+type City struct {
+  WithName
+}
+
+type Printable interface {
+  PrintStr()
+}
+
+func (w WithName) PrintStr() {
+  fmt.Println(w.Name)
+}
+
+c1 := Country { WithName{"China"} }
+c2 := City { WithName{"Beijing"} }
+c1.PrintStr()
+c2.PrintStr()
+```
+
+- 代码依然比较乱，继续完善：
+
+```go
+type Country struct {
+  Name string
+}
+
+type City struct {
+  Name string
+}
+
+type Stringable interface {
+  ToString() string
+}
+
+func (c Country) ToString() string {
+  return "Country = " + c.Name
+}
+
+func (c City) ToString() string{
+  return "City = " + c.Name
+}
+
+func PrintStr(p Stringable) {
+  fmt.Println(p.ToString())
+}
+
+d1 := Country {"USA"}
+d2 := City{"Los Angeles"}
+PrintStr(d1)
+PrintStr(d2)
+```
+
+- `Stringable` 的接口将 “业务类型” `Country` 和 `City`，以及 “控制逻辑” `Print()` 解耦了，只要实现了 `Stringable`，都可传给 `PrintStr()` 使用
+- 核心思想 —— **Program to an interface not an implementation**
+
+### 接口完整性检查
+
