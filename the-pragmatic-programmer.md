@@ -87,7 +87,7 @@
 
 - Use tracer bullets to find the target
 - Tracer code approach: Initially simply achieved an end-to-end connection among the components of your system
-- Beneifits;
+- Beneifits:
   - Users get to see something working early
   - Developers build a structure to work in
   - You have an integration platform
@@ -95,3 +95,19 @@
   - You have a better feel for progress
 - Tracer bullets might bot always hit target, you then adjust your aim until they're on target
 - Think of prototyping as the reconnaissance and intelligence gathering that takes place before a single tracer bullet is fired
+
+### Prototypes and Post-it Notes
+
+- We build software prototypes to analyze and expose risk, and to offer chances for correction at a greatly reduced cost
+- Prototypes no need to be code-based, other format also ok, eg. post-it notes, index card, workflow, application logic, drawing...
+- If you find yourself cannot give up the details, then you need to ask yourself if you are really building a prototype at all
+  - Can consider switching to **tracer bullet** instead
+- You can prototype anything you are not sure, not comfortable with, haven't tried before, or very critical to the final system
+- Prototyping is a learning experience, its value is in the lessons learned
+- Some specific area in the architectural prototype:
+  - Are the responsibilities of the major components well defined and appropriate?
+  - Are the collaborations between major components well defined?
+  - Is coupling minimized?
+  - Can you identify potential sources of duplication?
+  - Are interface definitions and constraints acceptable?
+  - Does every module have an access path to the data it needs during execution? Does it have that access when it needs it? (most valuable)
