@@ -111,3 +111,37 @@
   - Can you identify potential sources of duplication?
   - Are interface definitions and constraints acceptable?
   - Does every module have an access path to the data it needs during execution? Does it have that access when it needs it? (most valuable)
+
+### Domain Languages
+
+- You can design a mini-language which let you program close to the problem domain
+- eg. the word below can be translate to a language
+
+```
+Listen for transactions defined by ABC Regulation 12.3 on a set of X.25 lines, translate them to XYZ Company’s format 43B, retransmit them on the satellite uplink, and store for future analysis
+
+
+From X25LINE1 (Format=ABC123) {
+  Put TELSTAR1 (Format=XYZ43B);
+  Store DB;
+}
+```
+
+- By coding at a higher level of abstraction, you are free to concentrate on solving domain problems, and can ignore petty implementation details
+- Each people/user has their own problem domain, can generate mini-environments and languages for all of them
+- To implement a mini-language, first using a notation such as **BNF** to define the syntax and have grammer specified
+  - There’s another way of implementing a mini-language: extend an existing one
+- Implemented languages can be used in 2 different ways:
+  - **Data Languages**: produce some form of data structure, often used to represent configuration information
+  - **Imperative languages**: the language is actually executed, more like an interface to help connect systems/components, eg. screen scraping
+  ```
+  locate prompt "SSN:"
+  type "%s" social_security_number
+  type enter
+  waitfor keyboardunlock
+  if text_at(10,14) is "INVALID SSN" return bad_ssn
+  if text_at(10,14) is "DUPLICATE SSN" return dup_ssn
+  # etc...
+  ```
+    - It is common to embed high-level imperative languages directly into your application, so that they execute when your code runs
+
