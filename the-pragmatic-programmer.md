@@ -174,3 +174,14 @@ From X25LINE1 (Format=ABC123) {
   - Analyze risk
   - Design, implement, inegrate
   - Validate with the users
+
+## CH 3. The Basic Tools
+
+### The Power of Plain Text
+
+- Benefits for using plain text to store information:
+  - **Insurance Against Obsolescence**
+    - As long as the data survives, you will have a chance to be able to use it
+  - **Leverage**
+    - Every tool in the computing universe can operate on plain text
+  - **Easier Testing**
