@@ -1368,3 +1368,182 @@ mybar := bar
 Decorator(&mybar, bar)
 mybar("hello,", "world!")
 ```
+
+## Go 编程模式 - Pipeline
+
+- Pipeline 是一种把各种命令拼接起来完成一个更强功能的技术方法
+- Pipeline 可以很容易地把代码按单一职责的原则拆分成多个高内聚低耦合的小模块，然后轻松地把它们拼装起来，去完成比较复杂的功能
+- 在上面修饰器例子中提到的 http handler，最后就是一个 Pipeline
+- 我们可以基于 Go Routine 和 Channel 来构建 Pipeline，首先创建一个 echo 函数
+
+```go
+// 把一个整型数组放到一个 Channel 中
+func echo(nums []int) <-chan int {
+  out := make(chan int)
+  go func() {
+    for _, n := range nums {
+      out <- n
+    }
+    close(out)
+  }()
+  return out
+}
+```
+
+- 然后依照上面的模式，类似地可以创建不同功能的函数：
+
+```go
+// 求平方的函数
+func sq(in <-chan int) <-chan int {
+  out := make(chan int)
+  go func() {
+    for n := range in {
+      out <- n * n
+    }
+    close(out)
+  }()
+  return out
+}
+
+// 过滤奇数的函数
+func odd(in <-chan int) <-chan int {
+  out := make(chan int)
+  go func() {
+    for n := range in {
+      if n%2 != 0 {
+        out <- n
+      }
+    }
+    close(out)
+  }()
+  return out
+}
+
+// 求和函数
+func sum(in <-chan int) <-chan int {
+  out := make(chan int)
+  go func() {
+    var sum = 0
+    for n := range in {
+      sum += n
+    }
+    out <- sum
+    close(out)
+  }()
+  return out
+}
+```
+
+- 我们就可以将上面的函数拼接起来，这其实就相当于命令行中的 `echo $nums | odd | sq | sum`：
+
+```go
+var nums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+for n := range sum(sq(odd(echo(nums)))) {
+  fmt.Println(n)
+}
+```
+
+- 如果不想要有这么多的嵌套，可以通过代理函数完成
+
+```go
+type EchoFunc func ([]int) (<- chan int) 
+type PipeFunc func (<- chan int) (<- chan int) 
+
+func pipeline(nums []int, echo EchoFunc, pipeFns ... PipeFunc) <- chan int {
+  ch  := echo(nums)
+  for i := range pipeFns {
+    ch = pipeFns[i](ch)
+  }
+  return ch
+}
+```
+
+- 有了上面的代理函数，使用起来就会更加地简洁：
+
+```go
+var nums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}    
+for n := range pipeline(nums, echo, odd, sq, sum) {
+  fmt.Println(n)
+}
+```
+
+### Fan in/out
+
+- 假设我们需要用并发的方式对一个很长的数组中的质数进行求和运算
+
+```go
+func makeRange(min, max int) []int {
+  a := make([]int, max-min+1)
+  for i := range a {
+    a[i] = min + i
+  }
+  return a
+}
+
+func is_prime(value int) bool {
+  for i := 2; i <= int(math.Floor(float64(value) / 2)); i++ {
+    if value%i == 0 {
+      return false
+    }
+  }
+  return value > 1
+}
+
+func prime(in <-chan int) <-chan int {
+  out := make(chan int)
+  go func ()  {
+    for n := range in {
+      if is_prime(n) {
+        out <- n
+      }
+    }
+    close(out)
+  }()
+  return out
+}
+
+func merge(cs []<-chan int) <-chan int {
+  var wg sync.WaitGroup
+  out := make(chan int)
+
+  wg.Add(len(cs))
+  for _, c := range cs {
+    go func(c <-chan int) {
+      for n := range c {
+        out <- n
+      }
+      wg.Done()
+    }(c)
+  }
+  go func() {
+    wg.Wait()
+    close(out)
+  }()
+  return out
+}
+
+func main() {
+  // 制造一个从 1 到 10000 的数组
+  nums := makeRange(1, 10000)
+
+  // 把这堆数放到 channel 里
+  in := echo(nums)
+
+  // 生成 5 个 channel，并同时执行 sum(prime(in))
+  // 每个 Sum 的 Go Routine 都会开始计算和
+  const nProcess = 5
+  var chans [nProcess]<-chan int
+  for i := range chans {
+    chans[i] = sum(prime(in))
+  }
+
+  // 把所有的结果再次求和，得到最终的结果
+  for n := range sum(merge(chans[:])) {
+    fmt.Println(n)
+  }
+}
+```
+
+- 整个程序的结构图如下：
+
+![](/assets/geektime/go_pipeline_prime_sum.png)
