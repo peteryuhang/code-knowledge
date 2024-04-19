@@ -205,3 +205,13 @@ From X25LINE1 (Format=ABC123) {
   - How many lines of code did we change in this release?
   - Which files get changed most often?
   - Identify releases of your software
+
+### Debugging
+
+- Embrace the fact that debugging is just problem solving, and attack it as such
+- In the technical arena, you want to concentrate on fixing the problem, not the blame
+- The first rule of debugging - **Don't Panic**
+- A very simple but particularly useful technique for finding the cause of a problem is simply to explain it to someone else
+- The amount of surprise you feel when something goes wrong is directly proportional to the amount of trust and faith you have in the code being run
+  - You must realize that one or more of your assumptions is wrong
+  - Don’t Assume It—Prove It. Prove it in this context, with this data, with these boundary conditions
