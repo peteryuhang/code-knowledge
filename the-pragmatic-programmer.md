@@ -145,3 +145,32 @@ From X25LINE1 (Format=ABC123) {
   ```
     - It is common to embed high-level imperative languages directly into your application, so that they execute when your code runs
 
+### Estimating
+
+- Estimate to avoid surprises
+- Choose the units of your answer to reflect the accuracy you intend to convey:
+  | Duration | Register ID|
+  |:-----|:------|
+  | 1-15 days | days |
+  | 3-8 weeks | weeks |
+  | 8-30 weeks | months |
+  | 30+ weeks | think hard before giving an estimate |
+- Before you get too committed to model building, cast around for someone who’s been in a similar situation in the past
+- From your understanding of the question being asked, build a rough and ready bare-bones mental model
+  - Often, the process of building the model leads to discoveries of underlying patterns and processes that weren’t apparent on the surface
+- Once you have a model, you can decompose it into components
+  - You’ll need to discover the mathematical rules that describe how these components interact
+  - You’ll find that each component will typically have parameters that affect how it contributes to the overall model
+  - At this stage, simply identify each parameter
+- Once you have the parameters broken out, you can go through and assign each one a value
+  - The trick is to work out which parameters have the most impact on the result, and concentrate on getting them about right
+  - Typically, parameters whose values are added into a result are less significant than those that are multiplied or divid
+- Run multiple calculations, varying the values of the critical parameters, until you work out which ones really drive the model
+- When an estimate turns out wrong, don’t just shrug and walk away. Find out why it differed from your guess
+  - Next time will be better
+- The only way to determine the timetable for a project is by gaining experience on that same project
+- Repeating the following steps to refine the estimate:
+  - Check requirement
+  - Analyze risk
+  - Design, implement, inegrate
+  - Validate with the users
