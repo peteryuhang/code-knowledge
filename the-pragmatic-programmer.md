@@ -185,3 +185,23 @@ From X25LINE1 (Format=ABC123) {
   - **Leverage**
     - Every tool in the computing universe can operate on plain text
   - **Easier Testing**
+
+### Shell Games
+
+- A benefit of GUIs is WYSIWYG—what you see is what you get. The disadvantage is WYSIAYG—what you see is all you get.
+- The scope of any one tool is usually limited to the tasks that the tool is expected to perform
+- By programming the shell, you can build complex macro commands for activities you perform often
+
+### Power Editing
+
+- Choose an editor, know it thoroughly, and use it for all editing tasks
+
+### Source Code Control
+
+- It’s a giant UNDO key—a project-wide time machine
+- Beside the UNDO, can answer the question or have beneifits below:
+  - Who made changes in this line of code?
+  - What’s the difference between the current version and last week’s?
+  - How many lines of code did we change in this release?
+  - Which files get changed most often?
+  - Identify releases of your software
