@@ -215,3 +215,28 @@ From X25LINE1 (Format=ABC123) {
 - The amount of surprise you feel when something goes wrong is directly proportional to the amount of trust and faith you have in the code being run
   - You must realize that one or more of your assumptions is wrong
   - Don’t Assume It—Prove It. Prove it in this context, with this data, with these boundary conditions
+
+### Text Manipulation
+
+- Learn a text manipulation language, eg. Perl, Python
+
+### Code Generators
+
+- **Passive code generator**: Run once to produce a result
+  - Once the result is produced, it becomes a full-fledged source file in the project; it will be edited, compiled, and placed under source control just like any other file
+  - Usage Examples:
+    - Creating new source files, eg. templates, source code control directives, copyright notices, and standard comment blocks
+    - Performing one-off conversions among programming languages
+    - Producing lookup tables and other resources
+- **Active code generator**: Used each time their results are required, help get rid of duplicate code
+  - With an active code generator, you can take a single representation of some piece of knowledge and convert it into all the forms your application needs
+  - Are a necessity if you want to follow the DRY principle
+  - Whenever you find yourself trying to get two disparate environments to work together, you should consider using active code generators
+    - eg. database schema in code & certain database table - will violates the DRY principle
+      - Use active code generate to fetch schema and generate source code automatically
+      - Schema change, the code used to access it also changes, automatically (only if you make the code generation part of the build process itself)
+    - eg. different programming languages are used in the same application
+      - In order to communicate, each code base will need some information in common - data structure, message formats, etc
+      - Rather than duplicate this information, use a code generator
+- Keep the input format simple, and the code generator becomes simple
+- Not only source code, code generators can also be used to write about any output: HTML, XML, plain text—any text that might be an input somewhere else in your project
