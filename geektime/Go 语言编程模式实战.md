@@ -1547,3 +1547,245 @@ func main() {
 - 整个程序的结构图如下：
 
 ![](/assets/geektime/go_pipeline_prime_sum.png)
+
+
+## Go 编程模式 - Kubernetes Visitor
+
+- Visitor 模式是将算法与操作对象的结构分离的一种方法
+- 这种分离的实际结果是能够在不修改结构的情况下向现有对象结构添加新操作，是遵循开放 / 封闭原则的一种方法
+
+- 简单的 visitor 示例：
+```go
+package main
+
+import (
+  "encoding/json"
+  "encoding/xml"
+  "fmt"
+)
+
+type Visitor func(shape Shape)
+
+type Shape interface {
+  accept(Visitor)
+}
+
+type Circle struct {
+  Radius int
+}
+
+func (c Circle) accept(v Visitor) {
+  v(c)
+}
+
+type Rectangle struct {
+  Width, Heigh int
+}
+
+func (r Rectangle) accept(v Visitor) {
+  v(r)
+}
+```
+
+- 实现两个 Visitor，一个用来做 JSON 序列化；另一个用来做 XML 序列化：
+
+```go
+func JsonVisitor(shape Shape) {
+  bytes, err := json.Marshal(shape)
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(string(bytes))
+}
+
+func XmlVisitor(shape Shape) {
+  bytes, err := xml.Marshal(shape)
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(string(bytes))
+}
+```
+
+- 使用如下：
+
+```go
+func main() {
+  c := Circle{10}
+  r :=  Rectangle{100, 200}
+  shapes := []Shape{c, r}
+
+  for _, s := range shapes {
+    s.accept(JsonVisitor)
+    s.accept(XmlVisitor)
+  }
+}
+```
+
+- 主要目的就是解耦数据结构（`Circle`，`Rectangle`）和算法（`Json`，`xml`）
+- 上面的逻辑也可以用 Strategy 模式完成，但是有些时候，多个 Visitor 是来访问一个数据结构的不同部分，这种情况下，数据结构有点像一个数据库，而各个 Visitor 会成为一个个的小应用，kubectl 就是这样
+
+- kubectl 的主要工作是处理用户提交的东西（包括命令行参数、YAML 文件等），接着会把用户提交的这些东西组织成一个数据结构体，发送给 API Server
+- 基本原理就是它从命令行和 YAML 文件中获取信息，通过 Builder 模式并把其转成一系列的资源，最后用 Visitor 模式来迭代处理这些 Reources
+
+- kubectl 的简单实现方法，kubectl 主要是用来处理 Info 结构体，相关定义：
+
+```go
+type VisitorFunc func(*Info, error) error
+
+type Visitor interface {
+  Visit(VisitorFunc) error
+}
+
+type Info struct {
+  Namespace   string
+  Name        string
+  OtherThings string
+}
+
+func (info *Info) Visit(fn VisitorFunc) error {
+  return fn(info, nil)
+}
+```
+
+- 几种不同类型的 Visitor
+
+```go
+// 用来访问 Info 结构中的 Name 和 NameSpace 成员
+type NameVisitor struct {
+  visitor Visitor
+}
+
+func (v NameVisitor) Visit(fn VisitorFunc) error {
+  return v.visitor.Visit(func(info *Info, err error) error {
+    fmt.Println("NameVisitor() before call function")
+    err = fn(info, err)
+    if err == nil {
+      fmt.Printf("==> Name=%s, NameSpace=%s\n", info.Name, info.Namespace)
+    }
+    fmt.Println("NameVisitor() after call function")
+    return err
+  })
+}
+
+// 用来访问 Info 结构中的 OtherThings 成员
+type OtherThingsVisitor struct {
+  visitor Visitor
+}
+
+func (v OtherThingsVisitor) Visit(fn VisitorFunc) error {
+  return v.visitor.Visit(func(info *Info, err error) error {
+    fmt.Println("OtherThingsVisitor() before call function")
+    err = fn(info, err)
+    if err == nil {
+      fmt.Printf("==> OtherThings=%s\n", info.OtherThings)
+    }
+    fmt.Println("OtherThingsVisitor() after call function")
+    return err
+  })
+}
+
+// 用来输出 log
+type LogVisitor struct {
+  visitor Visitor
+}
+
+func (v LogVisitor) Visit(fn VisitorFunc) error {
+  return v.visitor.Visit(func(info *Info, err error) error {
+    fmt.Println("LogVisitor() before call function")
+    err = fn(info, err)
+    fmt.Println("LogVisitor() after call function")
+    return err
+  })
+}
+```
+
+- 使用方代码：
+
+```go
+func main() {
+  info := Info{}
+  var v Visitor = &info
+  v = LogVisitor{v}
+  v = NameVisitor{v}
+  v = OtherThingsVisitor{v}
+
+  loadFile := func(info *Info, err error) error {
+    info.Name = "Hao Chen"
+    info.Namespace = "MegaEase"
+    info.OtherThings = "We are running as remote team."
+    return nil
+  }
+  v.Visit(loadFile)
+}
+```
+
+- 代码的输出如下：
+
+```
+LogVisitor() before call function
+NameVisitor() before call function
+OtherThingsVisitor() before call function
+==> OtherThings=We are running as remote team.
+OtherThingsVisitor() after call function
+==> Name=Hao Chen, NameSpace=MegaEase
+NameVisitor() after call function
+LogVisitor() after call function
+```
+
+- 上面的代码的功效：
+  - 解耦了数据和程序
+  - 使用了修饰器模式
+  - 做出了 Pipeline 的模式
+
+- 我们可以用修饰器模式来重构一下上面的代码
+
+```go
+type DecoratedVisitor struct {
+  visitor    Visitor
+  decorators []VisitorFunc
+}
+
+func NewDecoratedVisitor(v Visitor, fn ...VisitorFunc) Visitor {
+  if len(fn) == 0 {
+    return v
+  }
+  return DecoratedVisitor{v, fn}
+}
+
+// Visit implements Visitor
+func (v DecoratedVisitor) Visit(fn VisitorFunc) error {
+  return v.visitor.Visit(func(info *Info, err error) error {
+    if err != nil {
+      return err
+    }
+    if err := fn(info, nil); err != nil {
+      return err
+    }
+    for i := range v.decorators {
+      if err := v.decorators[i](info, nil); err != nil {
+        return err
+      }
+    }
+    return nil
+  })
+}
+```
+
+- 代码就可以这样运作了：
+
+```go
+func main() {
+  info := Info{}
+  var v Visitor = &info
+  v = NewDecoratedVisitor(v, NameVisitor, OtherVisitor)
+
+  loadFile := func(info *Info, err error) error {
+    info.Name = "Hao Chen"
+    info.Namespace = "MegaEase"
+    info.OtherThings = "We are running as remote team."
+    return nil
+  }
+  v.Visit(loadFile)
+}
+```
