@@ -240,3 +240,57 @@ From X25LINE1 (Format=ABC123) {
       - Rather than duplicate this information, use a code generator
 - Keep the input format simple, and the code generator becomes simple
 - Not only source code, code generators can also be used to write about any output: HTML, XML, plain text—any text that might be an input somewhere else in your project
+
+## CH 4. Pragmatic Paranoia
+
+- When everybody actually is out to get you, paranoia is just good thinking   ---Woody Allen
+
+### Design by Contract (DBC)
+
+- What is a correct program? One that does no more and no less than it claims to do
+  - Documenting and verifying that claim is the heart of Design by Contract
+- Expectations and claims:
+  - **Preconditions**: The routine’s requirements. A routine should never get called when its preconditions would be violated
+  - **Postconditions**: The state of the world when the routine is done. The fact that the routine has a postcondition implies that it will conclude
+  - **Class invariants**: Condition is always true from the perspective of a caller (Invariants might not be hold during internal processing, but must true by the time routine exits and control returns to the caller)
+- If all the routine’s preconditions are met by the caller, the routine shall guarantee that all postconditions and invariants will be true when it completes
+- If either party fails to live up to the terms of the contract, then a remedy (which was previously agreed to) is invoked—an exception is raised, or the program terminates, for instance
+- 
+- eg. contract for a routine that inserts a data value into a unique, ordered list:
+
+``` java
+/** 
+ * @invariant forall Node n in elements() |
+ *      n.prev() != null
+ *        implies
+ *          n.value().compareTo(n.prev().value()) > 0
+ */
+public class dbc_list {
+  /**
+   * @pre contains(aNode) == false
+   * @post contains(aNode) == true
+   */
+  public void insertNode(final Node aNode) {
+    // ...
+  }
+  // ...
+}
+```
+
+- Here, we use the Java keyword **final** to indicate our intentions that the parameter shouldn’t be changed within the method since precondition will use `aNode` to verify correct behavior
+- The emphasis is on "lazy" code: Be strict in what you will accept before you begin, and promise as little as possible in return
+- Subclass must accept at least as much, and guarantee as much, as its parent
+- DBC fits in nicely with out concept of crashing early
+- If there is no built-in support, it should be the **caller's responsibility** to checks these assertions
+- It’s much easier to find and diagnose the problem by crashing early, at the site of the problem
+- Beside class, other uses of invariants:
+  - **Loop Invariants**:
+    ``` java
+    int m = arr[0]; // example assumes arr.length > 0 int i = 1;
+    // Loop invariant: m = max(arr[0:i-1])
+    while (i < arr.length) {
+      m = Math.max(m, arr[i]); i = i + 1;
+    }
+    ```
+  - **Semantic Invariants**:
+    - Express inviolate requirements, a kind of "philosophical contract"
