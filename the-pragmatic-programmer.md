@@ -294,3 +294,70 @@ public class dbc_list {
     ```
   - **Semantic Invariants**:
     - Express inviolate requirements, a kind of "philosophical contract"
+    - Clear, concise, unambiguous statement that’s applicable in many different areas of the system
+
+### Dead Programs Tell No Lies
+
+- When your code discovers that something that was supposed to be impossible just happened, your program is no longer viable
+- A dead program normally does a lot less damage than a crippled one
+
+### Assertive Programming
+
+- If it can't happen, use assertionss to ensure that it won't
+- Don't use assertions in place of real error handling. Assertions check for things that should never happen: you don’t want to be writing code such as:
+
+```c
+printf("Enter ’Y’ or ’N’: ");
+ch = getchar();
+assert((ch == ’Y’) || (ch == ’N’)); /* bad idea! */
+```
+
+### When to Use Exceptions
+
+- See the benefits of exceptions on the code below:
+
+```java
+// code w/o exception
+retcode = OK;
+if (socket.read(name) != OK) {
+  retcode = BAD_READ;
+}
+else {
+  processName(name);
+  if (socket.read(address) != OK) {
+    retcode = BAD_READ;
+  } else {
+    processAddress(address);
+    if (socket.read(telNo) != OK) {
+      retcode = BAD_READ;
+    } else {
+      // etc, etc...
+    } 
+  }
+}
+return retcode;
+
+// code with exception
+retcode = OK;
+try { 
+  socket.read(name);
+  process(name);
+  socket.read(address);
+  processAddress(address);
+  socket.read(telNo);
+  // etc, etc...
+} catch (IOException e) {
+  retcode = BAD_READ;
+  Logger.log("Error reading individual: " + e.getMessage());
+}
+return retcode;
+```
+
+- Exceptions should rarely be used as part of a program’s normal flow; exceptions should be reserved for unexpected events
+- Use exceptions for exceptional problems
+- Exception will be generated under only truly exceptional circumstances, otherwise error return will be appropriate
+- Programs that use exceptions as part of their normal processing suffer from all the readability and maintainability problems of classic spaghetti code
+  - Exception represents an immediate, nonlocal transfer of control—it’s a kind of cascading goto
+  - These programs break encapsulation: routines and their callers are more tightly coupled via exception handling
+- Error handlers are an alternative to exception:
+  - eg. wrap an object which potentially throw exception in handler, so other modules which call this object can rely on this handler, and no need to handle these exception by themselvies
