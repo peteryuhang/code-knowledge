@@ -361,3 +361,4 @@ return retcode;
   - These programs break encapsulation: routines and their callers are more tightly coupled via exception handling
 - Error handlers are an alternative to exception:
   - eg. wrap an object which potentially throw exception in handler, so other modules which call this object can rely on this handler, and no need to handle these exception by themselvies
+
