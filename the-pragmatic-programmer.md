@@ -423,3 +423,68 @@ return retcode;
   }
   ```
 - Producing wrappers for each type of resource, and using these wrappers to keep track of all allocations and deallocations, especially the top single entry point
+
+## CH 5. Bend, or Break
+
+### Decoupling and the Law of Demeter
+
+- Example for coupling module:
+
+```java
+public void plotDate(Date aDate, Selection aSelection) {
+  TimeZone tz = aSelection.getRecorder().getLocation().getTimeZone();
+  ...
+}
+```
+- It increases the risk that an unrelated change somewhere else in the system will affect your code
+  - eg. `Location` such that it no longer directly contains a `TimeZone`, you have to change your code as well
+- A better way is ask for what you need directly:
+
+```java
+public void plotDate(Date aDate, TimeZone aTz) {
+  ...
+}
+plotDate(someDate, someSelection.getTimeZone());
+```
+
+- The Law of Demeter for functions attempts to **minimize coupling between modules** in any given program
+
+![](/assets/the-progmatic-programmer/law_of_demeter_for_functions.png)
+
+- Cost of law of demeter: your module must delegate and manage any and all subcontractors directly, without involving clients of your module. You will be writing a large number of wrapper methods that simply forward the request on to a delegate
+
+- Examples which violate Law of Demeter:
+```java
+// bad
+public void showBalance(BankAccount acct) {
+  // Allowed, acct is passed in as a parameter
+  Money amt = acct.getBalance();
+
+  // Not Allowed, we don't own amt
+  printToScreen(amt.printFormat());
+}
+
+// good
+public void showBalance(BankAccount acct) {
+  acct.printBalance();
+}
+```
+
+```cpp
+void processTransaction(BankAccount acct, int) {
+  Person *who;
+  Money amt;
+  // Allowed, we own amt
+  amt.setValue(123.45);
+
+  // Allowed, acct is passed in as a parameter
+  acct.setBalance(amt);
+  who = acct.getOwner();
+
+  // Not Allowed, we don't own who
+  markWorkflow(who->name(), SET_BALANCE);
+
+  // better one
+  // markWorkflow(acct.name(), SET_BALANCE);
+}
+```
