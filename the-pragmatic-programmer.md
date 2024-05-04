@@ -362,3 +362,64 @@ return retcode;
 - Error handlers are an alternative to exception:
   - eg. wrap an object which potentially throw exception in handler, so other modules which call this object can rely on this handler, and no need to handle these exception by themselvies
 
+### How to Balance Resources
+
+- **Finish What You Start**
+  - eg. the routine that allocates a resource should also free it
+- Suggestions for resource allocation
+  - Deallocate resources in the opposite order to that in which you allocate them, you won’t orphan resources if one resource contains references to another
+  - When allocating the same set of resources in different places in your code, always allocate them in the same order, this will reduce the possibility of deadlock
+- Exception handling in C++:
+  ```cpp
+  void doSomething(void) {
+    Node *n = new Node;
+    try {
+      // do something
+    } catch (...) {
+      delete n;
+      throw;
+    }
+    delete n;
+  }
+  ```
+  - Violate the DRY principle
+  - We can change `n` from a pointer to an actual Node object on the stack (will be auto cleanup when function return):
+  ```cpp
+  void doSomething(void) {
+    Node n;
+    try {
+      // do something
+    } catch (...) {
+      throw;
+    }
+  }
+  ```
+  - If switch from a pointer is not possible, we can wrap the resource within another class:
+  ```cpp
+  // Wrapper class for Node resources
+  class NodeResource {
+    Node *n;
+    public:
+      NodeResource() { n = new Node; }
+      ~NodeResource() { delete n; }
+      Node *operator->() { return n; }
+  };
+
+  void doSomething2(void) {
+    NodeResource n;
+    try {
+      // do something
+    } catch (...) {
+      throw;
+    }
+  }
+  ```
+  - Because this technique is so useful, the standard C++ library provides the template class auto_ptr, which gives you automatic wrappers for dynamically allocated objects
+  ```cpp
+  void doSomething3(void) {
+    auto_ptr<Node> p (new Node);
+    // Access the Node as p->...
+    // Node automatically deleted at end
+  }
+  ```
+- Producing wrappers for each type of resource, and using these wrappers to keep track of all allocations and deallocations, especially the top single entry point
