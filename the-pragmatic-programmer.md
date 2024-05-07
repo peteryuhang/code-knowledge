@@ -500,3 +500,36 @@ void processTransaction(BankAccount acct, int) {
   - You can customize the application without recompiling it
   - Metadata can be expressed in a manner that’s much closer to the problem domain than a general-purpose programming language might be
   - You may even be able to implement several different projects using the same application engine, but with different metadata
+
+### Temporal Coupling
+
+- There are two aspects of time that are important to us:
+  - Concurrency
+  - Ordering
+- Think in linear way leads to temporal coupling: coupling in time
+
+#### Workflow
+
+- Draw an activity diagram to analyze workflow to improve concurrency
+- eg.
+
+![](./assets/the-progmatic-programmer/uml_activity_diagram_eg.png)
+
+#### Architecture
+
+- eg.
+
+![](./assets/the-progmatic-programmer/oltp_arch_overview.png)
+
+- This example also shows a way to get quick and dirty load balancing among multiple consumer processes: **the hungry consumer model**
+  - Replace the central scheduler with a number of independent consumer tasks and a centralized work queue
+  - If any particular task gets bogged down, the others can pick up the slack, and each individual component can proceed at its own pace
+  - Each component is temporally decoupled from the others
+
+#### Design for Concurrency
+
+- Concurrency forces you to think through thingss a bit more carefully
+  - Ask yourself why you need a global variable in the first place
+  - You need to make sure that you present consistent state information, regardless of the order of calls
+  - You must ensure that an object is in a valid state any time it could possibly be called
+- Always design for concurrency
