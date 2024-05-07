@@ -488,3 +488,15 @@ void processTransaction(BankAccount acct, int) {
   // markWorkflow(acct.name(), SET_BALANCE);
 }
 ```
+
+### Metaprogramming
+
+- Configure, don't integrate
+- Our goal is to think declaratively (specifying what is to be done, not how) and create highly dynamic and adaptable programs
+- Put abstractions in Code, Details in Metadata
+- Benefits:
+  - Forces you to decouple your design, which results in a more flexible and adaptable program
+  - Forces you to create a more robust, abstract design by deferring details
+  - You can customize the application without recompiling it
+  - Metadata can be expressed in a manner that’s much closer to the problem domain than a general-purpose programming language might be
+  - You may even be able to implement several different projects using the same application engine, but with different metadata
