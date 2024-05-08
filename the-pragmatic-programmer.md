@@ -533,3 +533,22 @@ void processTransaction(BankAccount acct, int) {
   - You need to make sure that you present consistent state information, regardless of the order of calls
   - You must ensure that an object is in a valid state any time it could possibly be called
 - Always design for concurrency
+
+### It's Just a View
+
+- We want module to hear what it wants to hear and disregards the rest
+- Using events can minimizes coupling between those objects-the sender of the event doesn't need to have any explicit knowledge of the receiver
+- Publish/subscribe protocal:
+
+![](./assets/the-progmatic-programmer/publish_subscribe_protocal.png)
+
+- We can use this publish/subscribe mechanism to implement a very important design concept: **the separation of a model from views of the model**
+
+#### Model-View-Controller
+
+- Key concept behind MVC idiom: Separating the model from both the GUI that represents it and the controls that manage the view
+- Benefits:
+  - Support multiple views of the same data model
+  - Use common viewers on many different data models
+  - Support multiple controllers to provide nontraditional input mechanism
+- Most important ways of maintaining reversibility
