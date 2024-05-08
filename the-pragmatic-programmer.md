@@ -552,3 +552,10 @@ void processTransaction(BankAccount acct, int) {
   - Use common viewers on many different data models
   - Support multiple controllers to provide nontraditional input mechanism
 - Most important ways of maintaining reversibility
+- The view is an interpretation of the model (perhaps a subset) - it doesn't need to be graphical
+
+- Model-viewer network:
+  - Each model may have many viewers, and one viewer may work with multiple models
+  - Each link decouples raw data from the events that created it—each new viewer is an abstraction
+
+![](./assets/the-progmatic-programmer/viewers_subscribe_models.png)
