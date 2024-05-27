@@ -564,3 +564,22 @@ void processTransaction(BankAccount acct, int) {
 
 - Use blackboards to coordinate workflow
 - We can use the blackboard to coordinate disparate facts and agents, while still maintaining independence and even isolation among participants
+
+## CH 6. While You Are Coding
+
+### Programming by Coincidence
+
+- Sometime we don't know why the code is failing because we didn't know why it worked in the first place
+  - It seemed to work, given the limited "testing", but that was just a coincidence
+- For routines you call, rely only on documented behavior. If you can’t, for whatever reason, then document your assumption well
+- It’s easy to assume that X causes Y, but as we said in Debugging: **don’t assume it, prove it**
+- Assumptions that aren't based on well-established facts are the bane of all projects
+- Suggestion for program deliberately:
+  - Always be aware of what you are doing
+  - Don’t code blindfolded (don't build an application you don't fully understand, don't use a technology you arn't familiar with)
+  - Proceed from a plan
+  - Rely only on reliable things. Don’t depend on accidents or assumptions. If you can’t tell the difference in particular circumstances, assume the worst
+  - Document your assumptions (Design by Contract can help clarify your assumptions in your own mind, as well as help communicate them to others)
+  - Don’t just test your code, but test your assumptions as well
+  - Prioritize your effort. Spend time on the important aspects; more than likely, these are the hard parts
+  - Don’t be a slave to history. Don’t let existing code dictate future code. Don’t let what you’ve already done constrain what you do next—be ready to refactor
