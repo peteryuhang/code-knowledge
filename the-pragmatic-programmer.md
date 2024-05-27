@@ -559,3 +559,8 @@ void processTransaction(BankAccount acct, int) {
   - Each link decouples raw data from the events that created it—each new viewer is an abstraction
 
 ![](./assets/the-progmatic-programmer/viewers_subscribe_models.png)
+
+### Blackboards
+
+- Use blackboards to coordinate workflow
+- We can use the blackboard to coordinate disparate facts and agents, while still maintaining independence and even isolation among participants
