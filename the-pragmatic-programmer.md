@@ -591,3 +591,19 @@ void processTransaction(BankAccount acct, int) {
 - You also need to be pragmatic about choosing appropriate algorithms, the fastest one is not always the best for the job
   - eg. Given a small input set, a straightforward insertion sort will perform just as well as a quick sort
   - eg. Need to be careful if the algorithm you choose has a high setup cost
+
+### Refactoring
+
+- Rather than construction, software is more like gardening
+- Rewriting, reworking, and re-architecting code is collectively known as refactoring
+- Things may cause code to qualify for refactoring
+  - **Duplication**: Violation of the DRY principle
+  - **Nonorthogonal design**: You’ve discovered some code or design that could be made more orthogonal
+  - **Outdated knowledge**: Things change, requirements drift, and your knowledge of the problem increases
+  - **Performance**: You need to move functionality from one area of the system to another to improve performance
+
+- Refactor early, reactor often
+- Suggestions for refactoring:
+  - Don't try to refactor and add functionality at the same time
+  - Make sure you have good tests before you begin refactoring. Run tests as often as possible
+  - Take short, deliberate steps
