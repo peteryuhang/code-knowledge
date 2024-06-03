@@ -583,3 +583,11 @@ void processTransaction(BankAccount acct, int) {
   - Don’t just test your code, but test your assumptions as well
   - Prioritize your effort. Spend time on the important aspects; more than likely, these are the hard parts
   - Don’t be a slave to history. Don’t let existing code dictate future code. Don’t let what you’ve already done constrain what you do next—be ready to refactor
+
+### Algorithm Speed
+
+- The `O()` notation doesn’t apply just to time; you can use it to represent any other resources used by an algorithm
+  - eg. memory consumption
+- You also need to be pragmatic about choosing appropriate algorithms, the fastest one is not always the best for the job
+  - eg. Given a small input set, a straightforward insertion sort will perform just as well as a quick sort
+  - eg. Need to be careful if the algorithm you choose has a high setup cost
