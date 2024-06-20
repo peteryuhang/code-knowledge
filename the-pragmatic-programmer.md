@@ -622,3 +622,7 @@ void processTransaction(BankAccount acct, int) {
 
 - Tests go in a particular place, and have a certain expected output, these 2 suggestion will make your life easier
 - Testing is more cultural than technical; we can instill this testing culture in a project regardless of the language being used
+
+## CH 7. Before the Project
+
+
