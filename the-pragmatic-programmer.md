@@ -607,3 +607,18 @@ void processTransaction(BankAccount acct, int) {
   - Don't try to refactor and add functionality at the same time
   - Make sure you have good tests before you begin refactoring. Run tests as often as possible
   - Take short, deliberate steps
+
+### Code That's Easy to Test
+
+- We want to write test cases that ensure that a given unit honors its contract
+  - whether the code meets the contract
+  - whether the contract means what we think it means
+
+- Test subcomponents of a module first. Once the subcomponents have been verified, then the module itself can be tested
+  - We can quickly concentrate on the likely source of the problem
+
+- Log messages should be in a regular, consistent format
+  - You may want to parse them automatically to deduce processing time or logic paths that the program took
+
+- Tests go in a particular place, and have a certain expected output, these 2 suggestion will make your life easier
+- Testing is more cultural than technical; we can instill this testing culture in a project regardless of the language being used
