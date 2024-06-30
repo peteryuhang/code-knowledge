@@ -666,3 +666,10 @@ void processTransaction(BankAccount acct, int) {
   - Does it have to be done this way?
   - Does it have to be done at all?
 - All you need are the real constraints, the misleading constraints, and the wisdom to know the difference
+
+### Not Until You're Ready
+
+- Great performers share a trait: they know when to start and when to wait
+- **Listen to Nagging Doubts—Start When You’re Ready**
+- Let your instincts contribute to your performance
+- Prototyping can help to distinguish between good judgement and procrastination
