@@ -632,7 +632,7 @@ void processTransaction(BankAccount acct, int) {
   - Very few requirements are as clear-cut, and that’s what makes requirements analysis complex
 - It’s important to discover the underlying reason why users do a particular thing, rather than just the way they currently do it
   - At the end of the day, your development has to solve their business problem, not just meet their stated requirements
-- There’s a simple technique for getting inside your users’ requirements that isn’t used often enough: **become a user**
+- There’s a simple technique for getting inside your users' requirements that isn't used often enough: **become a user**
   - Work with a User to Think Like a User
 - One way of looking at use cases is to emphasize their goal-driven nature
 
