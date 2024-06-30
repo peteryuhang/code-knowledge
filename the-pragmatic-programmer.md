@@ -625,4 +625,27 @@ void processTransaction(BankAccount acct, int) {
 
 ## CH 7. Before the Project
 
+### The Requirements Pit
 
+- Don’t Gather Requirements—Dig for Them
+  - Normally, they’re buried deep beneath layers of assumptions, misconceptions, and politics
+  - Very few requirements are as clear-cut, and that’s what makes requirements analysis complex
+- It’s important to discover the underlying reason why users do a particular thing, rather than just the way they currently do it
+  - At the end of the day, your development has to solve their business problem, not just meet their stated requirements
+- There’s a simple technique for getting inside your users’ requirements that isn’t used often enough: **become a user**
+  - Work with a User to Think Like a User
+- One way of looking at use cases is to emphasize their goal-driven nature
+
+![](/assets/the-progmatic-programmer/cockburns_use_case_template.png)
+
+- eg.
+
+![](/assets/the-progmatic-programmer/a_sample_use_case.png)
+
+- Use cases can contain hyperlinks to other use cases, and they can be nested within each other
+- Good requirements documents remain abstract
+  - Requirements are not architecture. Requirements are not design, nor are they the user interface. Requirements are need
+- **Abstractions Live Longer than Details**
+- The key to managing growth of requirements is to point out each new feature's impact on the schedule to the project sponsors
+- Create and maintain a project glossary—one place that defines all the specific terms and vocabulary used in a project
+  - All participants in the project, from end users to support staff, should use the glossary to ensure consistency
