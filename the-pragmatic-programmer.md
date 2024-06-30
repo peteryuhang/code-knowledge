@@ -649,3 +649,20 @@ void processTransaction(BankAccount acct, int) {
 - The key to managing growth of requirements is to point out each new feature's impact on the schedule to the project sponsors
 - Create and maintain a project glossary—one place that defines all the specific terms and vocabulary used in a project
   - All participants in the project, from end users to support staff, should use the glossary to ensure consistency
+
+### Solving Impossible Puzzles
+
+- The secret to solving the puzzle is to identify the real (not imagined) constraints, and find a solution therein
+  - Some constraints are absolute; others are merely preconceived notions
+  - Some apparent constraints may not be real constraints at all
+- The key to solving puzzles is both to recognize the constraints placed on you and to recognize the degrees of freedom you do have, for in those you’ll find your solution
+- When faced with an intractable problem, enumerate all the possible avenues you have before you. Don’t dismiss anything, no matter how unusable or stupid it sounds
+- We want to identify the most restrictive constraints first, and fit the remaining constraints within them
+- Some question can ask yourself when you feel you are in wrong way:
+  - Is there an easier way?
+  - Are you trying to solve the right problem, or have you been distracted by a peripheral technicality?
+  - Why is this thing a problem?
+  - What is it that's making it so hard to solve?
+  - Does it have to be done this way?
+  - Does it have to be done at all?
+- All you need are the real constraints, the misleading constraints, and the wisdom to know the difference
