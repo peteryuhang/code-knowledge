@@ -674,3 +674,19 @@ void processTransaction(BankAccount acct, int) {
 - Let your instincts contribute to your performance
 - Prototyping can help to distinguish between good judgement and procrastination
 
+### The Specification Trap
+
+- Program specification is the process of taking a requirement and reducing it down to the point where a programmer's skill can take over
+- The problem is that many designers find it difficult to stop
+  - They feel that unless every little detail is pinned down in excruciating detail they haven't earned their daily dollar
+- Reasons:
+  - Naive to assume that a specification will ever capture every detail and nuance of a system or its requirement
+  - There is a problem with the expressive power of language itself
+    - eg. Write a short description that tells someone how to tie bows in their shoelaces
+    - **Some things are better done than described**
+  - There is the straightjacket effect
+    - You wouldn't even have spotted the opportunity if you were constrained by an overly prescriptive design
+- As a Pragmatic Programmer, you should tend to view requirements gathering, design, and implementation as different facets of the same process—the delivery of a quality system
+  - Specification and implementation are simply different aspects of the same process-an attempt to capture and codify a requirement
+- Be careful about building specifications layered on top of specifications, without any supporting implementation or prototyping
+  - It's all too easy to specify something that can't be built
