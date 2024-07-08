@@ -690,3 +690,19 @@ void processTransaction(BankAccount acct, int) {
   - Specification and implementation are simply different aspects of the same process-an attempt to capture and codify a requirement
 - Be careful about building specifications layered on top of specifications, without any supporting implementation or prototyping
   - It's all too easy to specify something that can't be built
+
+### Circles and Arrows
+
+- Blindly adopting any technique without putting it into the context of your development practices and capabilities is a recipe for disappointment
+- Don't be a slave to formal methods
+- Formal methods' shortcomings:
+  - Formal methods sometime is just designer's or developer's understanding, other people who not familiar with formal method have to interpret them
+  - Formal methods seem to encourage specialization, and understanding whole system in isolated way
+  - There is also a tendency to fall back into the us versus them mentality of designers against coders
+  - Most formal methods will lead you astray, encouraging you to set up static relationships between objects that really should be knitted together dynamically
+- We can use formal methods but always remember that they are just one more tool in the toolbox
+  - If, after careful analysis, you feel you need to use a formal method, then embrace it—but remember who is in charge
+- Never become a slave to a methodology: circles and arrows make poor masters
+- Pragmatic Programmers look at methodologies critically, then extract the best from each and meld them into a set of working practices that gets better each month
+  - You should work constantly to refine and improve your processes
+- Expensive tools do not produce better designs
