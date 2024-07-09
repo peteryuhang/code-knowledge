@@ -706,3 +706,21 @@ void processTransaction(BankAccount acct, int) {
 - Pragmatic Programmers look at methodologies critically, then extract the best from each and meld them into a set of working practices that gets better each month
   - You should work constantly to refine and improve your processes
 - Expensive tools do not produce better designs
+
+
+## CH 8. Pragmatic Projects
+
+### Pragmatic Teams
+
+- Teams as a whole should not tolerate broken windows—those small imperfections that no one fixes
+- Make sure everyone actively monitors the environment for changes
+  - Check constantly for increased scope, decreased time scales, additional features, new environments—anything that wasn't in the original agreement
+- To outsiders, the worst project teams are those that appear sullen and reticent
+- There is a simple marketing trick that helps teams communicate as one: generate a brand
+  - When you start a project, come up with a name for it, ideally something off-the-wall
+  - Spend 30 minutes coming up with a zany logo, and use it on your memos and reports
+  - Use your team's name liberally when talking with people
+- There is an implicit hierarchy here—the closer to the user you’re allowed, the more senior you are
+- **Organize Around Functionality, Not Job Functions**
+- A great way to ensure both consistency and accuracy is to automate everything the team does
+- To ensure that things get automated, appoint one or more team members as tool builders to construct and deploy the tools that automate the project drudgery
