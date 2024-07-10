@@ -724,3 +724,8 @@ void processTransaction(BankAccount acct, int) {
 - **Organize Around Functionality, Not Job Functions**
 - A great way to ensure both consistency and accuracy is to automate everything the team does
 - To ensure that things get automated, appoint one or more team members as tool builders to construct and deploy the tools that automate the project drudgery
+
+### Ubiquitous Automation
+
+- Manual procedures leave consistency up to chance; repeatability isn't guaranteed, especially if aspects of the procedure are open to interpretation by different people
+- Subtle differences in the application’s behavior occurred when different developers ran the same code
