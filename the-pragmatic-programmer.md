@@ -729,3 +729,8 @@ void processTransaction(BankAccount acct, int) {
 
 - Manual procedures leave consistency up to chance; repeatability isn't guaranteed, especially if aspects of the procedure are open to interpretation by different people
 - Subtle differences in the application’s behavior occurred when different developers ran the same code
+
+### Ruthless Testing
+
+- **Test Early. Test Often. Test Automatically**
+- Tests that run with every build are much more effective than test plans that sit on a shelf
