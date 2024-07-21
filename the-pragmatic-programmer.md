@@ -655,8 +655,8 @@ void processTransaction(BankAccount acct, int) {
 - The secret to solving the puzzle is to identify the real (not imagined) constraints, and find a solution therein
   - Some constraints are absolute; others are merely preconceived notions
   - Some apparent constraints may not be real constraints at all
-- The key to solving puzzles is both to recognize the constraints placed on you and to recognize the degrees of freedom you do have, for in those you’ll find your solution
-- When faced with an intractable problem, enumerate all the possible avenues you have before you. Don’t dismiss anything, no matter how unusable or stupid it sounds
+- The key to solving puzzles is both to recognize the constraints placed on you and to recognize the degrees of freedom you do have, for in those you'll find your solution
+- When faced with an intractable problem, enumerate all the possible avenues you have before you. Don't dismiss anything, no matter how unusable or stupid it sounds
 - We want to identify the most restrictive constraints first, and fit the remaining constraints within them
 - Some question can ask yourself when you feel you are in wrong way:
   - Is there an easier way?
