@@ -59,11 +59,11 @@
   - Ask yourself how decoupled your design is from changes in the real world
     - Don't rely on the properties of things you can't control (eg. don't use the telephone as customer id)
 - Toolkits and Libararies
-  - When you bring in a toolkit, ask yourself whether it imposes changes on your code that shouldn’t be there
+  - When you bring in a toolkit, ask yourself whether it imposes changes on your code that shouldn't be there
     - Isolate the imposed change will make it easier (eg. EJB transaction related logic, AOP logging)
 - Code
   - Keep your code decoupled
-    - eg. If you need to change an object’s state, get the object to do it for you
+    - eg. If you need to change an object's state, get the object to do it for you
   - Avoid global data
     - eg. Singleton pattern
     - Your code is easier to understand and maintain if you explicitly pass any required context into your modules
@@ -118,7 +118,7 @@
 - eg. the word below can be translate to a language
 
 ```
-Listen for transactions defined by ABC Regulation 12.3 on a set of X.25 lines, translate them to XYZ Company’s format 43B, retransmit them on the satellite uplink, and store for future analysis
+Listen for transactions defined by ABC Regulation 12.3 on a set of X.25 lines, translate them to XYZ Company's format 43B, retransmit them on the satellite uplink, and store for future analysis
 
 
 From X25LINE1 (Format=ABC123) {
@@ -130,7 +130,7 @@ From X25LINE1 (Format=ABC123) {
 - By coding at a higher level of abstraction, you are free to concentrate on solving domain problems, and can ignore petty implementation details
 - Each people/user has their own problem domain, can generate mini-environments and languages for all of them
 - To implement a mini-language, first using a notation such as **BNF** to define the syntax and have grammer specified
-  - There’s another way of implementing a mini-language: extend an existing one
+  - There's another way of implementing a mini-language: extend an existing one
 - Implemented languages can be used in 2 different ways:
   - **Data Languages**: produce some form of data structure, often used to represent configuration information
   - **Imperative languages**: the language is actually executed, more like an interface to help connect systems/components, eg. screen scraping
@@ -155,18 +155,18 @@ From X25LINE1 (Format=ABC123) {
   | 3-8 weeks | weeks |
   | 8-30 weeks | months |
   | 30+ weeks | think hard before giving an estimate |
-- Before you get too committed to model building, cast around for someone who’s been in a similar situation in the past
+- Before you get too committed to model building, cast around for someone who's been in a similar situation in the past
 - From your understanding of the question being asked, build a rough and ready bare-bones mental model
-  - Often, the process of building the model leads to discoveries of underlying patterns and processes that weren’t apparent on the surface
+  - Often, the process of building the model leads to discoveries of underlying patterns and processes that weren't apparent on the surface
 - Once you have a model, you can decompose it into components
-  - You’ll need to discover the mathematical rules that describe how these components interact
-  - You’ll find that each component will typically have parameters that affect how it contributes to the overall model
+  - You'll need to discover the mathematical rules that describe how these components interact
+  - You'll find that each component will typically have parameters that affect how it contributes to the overall model
   - At this stage, simply identify each parameter
 - Once you have the parameters broken out, you can go through and assign each one a value
   - The trick is to work out which parameters have the most impact on the result, and concentrate on getting them about right
   - Typically, parameters whose values are added into a result are less significant than those that are multiplied or divid
 - Run multiple calculations, varying the values of the critical parameters, until you work out which ones really drive the model
-- When an estimate turns out wrong, don’t just shrug and walk away. Find out why it differed from your guess
+- When an estimate turns out wrong, don't just shrug and walk away. Find out why it differed from your guess
   - Next time will be better
 - The only way to determine the timetable for a project is by gaining experience on that same project
 - Repeating the following steps to refine the estimate:
@@ -198,10 +198,10 @@ From X25LINE1 (Format=ABC123) {
 
 ### Source Code Control
 
-- It’s a giant UNDO key—a project-wide time machine
+- It's a giant UNDO key—a project-wide time machine
 - Beside the UNDO, can answer the question or have beneifits below:
   - Who made changes in this line of code?
-  - What’s the difference between the current version and last week’s?
+  - What's the difference between the current version and last week's?
   - How many lines of code did we change in this release?
   - Which files get changed most often?
   - Identify releases of your software
@@ -214,7 +214,7 @@ From X25LINE1 (Format=ABC123) {
 - A very simple but particularly useful technique for finding the cause of a problem is simply to explain it to someone else
 - The amount of surprise you feel when something goes wrong is directly proportional to the amount of trust and faith you have in the code being run
   - You must realize that one or more of your assumptions is wrong
-  - Don’t Assume It—Prove It. Prove it in this context, with this data, with these boundary conditions
+  - Don't Assume It—Prove It. Prove it in this context, with this data, with these boundary conditions
 
 ### Text Manipulation
 
@@ -250,10 +250,10 @@ From X25LINE1 (Format=ABC123) {
 - What is a correct program? One that does no more and no less than it claims to do
   - Documenting and verifying that claim is the heart of Design by Contract
 - Expectations and claims:
-  - **Preconditions**: The routine’s requirements. A routine should never get called when its preconditions would be violated
+  - **Preconditions**: The routine's requirements. A routine should never get called when its preconditions would be violated
   - **Postconditions**: The state of the world when the routine is done. The fact that the routine has a postcondition implies that it will conclude
   - **Class invariants**: Condition is always true from the perspective of a caller (Invariants might not be hold during internal processing, but must true by the time routine exits and control returns to the caller)
-- If all the routine’s preconditions are met by the caller, the routine shall guarantee that all postconditions and invariants will be true when it completes
+- If all the routine's preconditions are met by the caller, the routine shall guarantee that all postconditions and invariants will be true when it completes
 - If either party fails to live up to the terms of the contract, then a remedy (which was previously agreed to) is invoked—an exception is raised, or the program terminates, for instance
 - 
 - eg. contract for a routine that inserts a data value into a unique, ordered list:
@@ -277,12 +277,12 @@ public class dbc_list {
 }
 ```
 
-- Here, we use the Java keyword **final** to indicate our intentions that the parameter shouldn’t be changed within the method since precondition will use `aNode` to verify correct behavior
+- Here, we use the Java keyword **final** to indicate our intentions that the parameter shouldn't be changed within the method since precondition will use `aNode` to verify correct behavior
 - The emphasis is on "lazy" code: Be strict in what you will accept before you begin, and promise as little as possible in return
 - Subclass must accept at least as much, and guarantee as much, as its parent
 - DBC fits in nicely with out concept of crashing early
 - If there is no built-in support, it should be the **caller's responsibility** to checks these assertions
-- It’s much easier to find and diagnose the problem by crashing early, at the site of the problem
+- It's much easier to find and diagnose the problem by crashing early, at the site of the problem
 - Beside class, other uses of invariants:
   - **Loop Invariants**:
     ``` java
@@ -294,7 +294,7 @@ public class dbc_list {
     ```
   - **Semantic Invariants**:
     - Express inviolate requirements, a kind of "philosophical contract"
-    - Clear, concise, unambiguous statement that’s applicable in many different areas of the system
+    - Clear, concise, unambiguous statement that's applicable in many different areas of the system
 
 ### Dead Programs Tell No Lies
 
@@ -304,12 +304,12 @@ public class dbc_list {
 ### Assertive Programming
 
 - If it can't happen, use assertionss to ensure that it won't
-- Don't use assertions in place of real error handling. Assertions check for things that should never happen: you don’t want to be writing code such as:
+- Don't use assertions in place of real error handling. Assertions check for things that should never happen: you don't want to be writing code such as:
 
 ```c
-printf("Enter ’Y’ or ’N’: ");
+printf("Enter 'Y' or 'N': ");
 ch = getchar();
-assert((ch == ’Y’) || (ch == ’N’)); /* bad idea! */
+assert((ch == 'Y') || (ch == 'N')); /* bad idea! */
 ```
 
 ### When to Use Exceptions
@@ -353,11 +353,11 @@ try {
 return retcode;
 ```
 
-- Exceptions should rarely be used as part of a program’s normal flow; exceptions should be reserved for unexpected events
+- Exceptions should rarely be used as part of a program's normal flow; exceptions should be reserved for unexpected events
 - Use exceptions for exceptional problems
 - Exception will be generated under only truly exceptional circumstances, otherwise error return will be appropriate
 - Programs that use exceptions as part of their normal processing suffer from all the readability and maintainability problems of classic spaghetti code
-  - Exception represents an immediate, nonlocal transfer of control—it’s a kind of cascading goto
+  - Exception represents an immediate, nonlocal transfer of control—it's a kind of cascading goto
   - These programs break encapsulation: routines and their callers are more tightly coupled via exception handling
 - Error handlers are an alternative to exception:
   - eg. wrap an object which potentially throw exception in handler, so other modules which call this object can rely on this handler, and no need to handle these exception by themselvies
@@ -367,7 +367,7 @@ return retcode;
 - **Finish What You Start**
   - eg. the routine that allocates a resource should also free it
 - Suggestions for resource allocation
-  - Deallocate resources in the opposite order to that in which you allocate them, you won’t orphan resources if one resource contains references to another
+  - Deallocate resources in the opposite order to that in which you allocate them, you won't orphan resources if one resource contains references to another
   - When allocating the same set of resources in different places in your code, always allocate them in the same order, this will reduce the possibility of deadlock
 - Exception handling in C++:
   ```cpp
@@ -498,7 +498,7 @@ void processTransaction(BankAccount acct, int) {
   - Forces you to decouple your design, which results in a more flexible and adaptable program
   - Forces you to create a more robust, abstract design by deferring details
   - You can customize the application without recompiling it
-  - Metadata can be expressed in a manner that’s much closer to the problem domain than a general-purpose programming language might be
+  - Metadata can be expressed in a manner that's much closer to the problem domain than a general-purpose programming language might be
   - You may even be able to implement several different projects using the same application engine, but with different metadata
 
 ### Temporal Coupling
@@ -571,22 +571,22 @@ void processTransaction(BankAccount acct, int) {
 
 - Sometime we don't know why the code is failing because we didn't know why it worked in the first place
   - It seemed to work, given the limited "testing", but that was just a coincidence
-- For routines you call, rely only on documented behavior. If you can’t, for whatever reason, then document your assumption well
-- It’s easy to assume that X causes Y, but as we said in Debugging: **don’t assume it, prove it**
+- For routines you call, rely only on documented behavior. If you can't, for whatever reason, then document your assumption well
+- It's easy to assume that X causes Y, but as we said in Debugging: **don't assume it, prove it**
 - Assumptions that aren't based on well-established facts are the bane of all projects
 - Suggestion for program deliberately:
   - Always be aware of what you are doing
-  - Don’t code blindfolded (don't build an application you don't fully understand, don't use a technology you arn't familiar with)
+  - Don't code blindfolded (don't build an application you don't fully understand, don't use a technology you arn't familiar with)
   - Proceed from a plan
-  - Rely only on reliable things. Don’t depend on accidents or assumptions. If you can’t tell the difference in particular circumstances, assume the worst
+  - Rely only on reliable things. Don't depend on accidents or assumptions. If you can't tell the difference in particular circumstances, assume the worst
   - Document your assumptions (Design by Contract can help clarify your assumptions in your own mind, as well as help communicate them to others)
-  - Don’t just test your code, but test your assumptions as well
+  - Don't just test your code, but test your assumptions as well
   - Prioritize your effort. Spend time on the important aspects; more than likely, these are the hard parts
-  - Don’t be a slave to history. Don’t let existing code dictate future code. Don’t let what you’ve already done constrain what you do next—be ready to refactor
+  - Don't be a slave to history. Don't let existing code dictate future code. Don't let what you've already done constrain what you do next—be ready to refactor
 
 ### Algorithm Speed
 
-- The `O()` notation doesn’t apply just to time; you can use it to represent any other resources used by an algorithm
+- The `O()` notation doesn't apply just to time; you can use it to represent any other resources used by an algorithm
   - eg. memory consumption
 - You also need to be pragmatic about choosing appropriate algorithms, the fastest one is not always the best for the job
   - eg. Given a small input set, a straightforward insertion sort will perform just as well as a quick sort
@@ -598,7 +598,7 @@ void processTransaction(BankAccount acct, int) {
 - Rewriting, reworking, and re-architecting code is collectively known as refactoring
 - Things may cause code to qualify for refactoring
   - **Duplication**: Violation of the DRY principle
-  - **Nonorthogonal design**: You’ve discovered some code or design that could be made more orthogonal
+  - **Nonorthogonal design**: You've discovered some code or design that could be made more orthogonal
   - **Outdated knowledge**: Things change, requirements drift, and your knowledge of the problem increases
   - **Performance**: You need to move functionality from one area of the system to another to improve performance
 
@@ -670,7 +670,7 @@ void processTransaction(BankAccount acct, int) {
 ### Not Until You're Ready
 
 - Great performers share a trait: they know when to start and when to wait
-- **Listen to Nagging Doubts—Start When You’re Ready**
+- **Listen to Nagging Doubts—Start When You're Ready**
 - Let your instincts contribute to your performance
 - Prototyping can help to distinguish between good judgement and procrastination
 
@@ -720,7 +720,7 @@ void processTransaction(BankAccount acct, int) {
   - When you start a project, come up with a name for it, ideally something off-the-wall
   - Spend 30 minutes coming up with a zany logo, and use it on your memos and reports
   - Use your team's name liberally when talking with people
-- There is an implicit hierarchy here—the closer to the user you’re allowed, the more senior you are
+- There is an implicit hierarchy here—the closer to the user you're allowed, the more senior you are
 - **Organize Around Functionality, Not Job Functions**
 - A great way to ensure both consistency and accuracy is to automate everything the team does
 - To ensure that things get automated, appoint one or more team members as tool builders to construct and deploy the tools that automate the project drudgery
@@ -728,7 +728,7 @@ void processTransaction(BankAccount acct, int) {
 ### Ubiquitous Automation
 
 - Manual procedures leave consistency up to chance; repeatability isn't guaranteed, especially if aspects of the procedure are open to interpretation by different people
-- Subtle differences in the application’s behavior occurred when different developers ran the same code
+- Subtle differences in the application's behavior occurred when different developers ran the same code
 
 ### Ruthless Testing
 
