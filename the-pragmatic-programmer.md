@@ -751,3 +751,9 @@ void processTransaction(BankAccount acct, int) {
 - **Gently Exceed Your Users' Expectations**
 - We need to work with them to come to a common understanding of the development process and the final deliverable, along with those expectations they have not yet verbalized
 - Listen to your users as the project progresses for clues about what features would really delight them
+
+### Pride and Prejudice
+
+- You shouldn't jealously defend your code against interlopers; by the same token, you should treat other people's code with respect
+- Anonymity, especially on large projects, can provide a breeding ground for sloppiness, mistakes, sloth, and bad code
+- We want to see pride of ownership. "I wrote this, and I stand behind my work."
