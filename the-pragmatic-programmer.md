@@ -744,3 +744,10 @@ void processTransaction(BankAccount acct, int) {
 - We want the writers to embrace the same basic principles that a Pragmatic Programmer does—especially honoring the **DRY principle**, **orthogonality**, the **model-view concept**, and the use of **automation** and **scripting**
 - This is a bad idea: a document's presentation should be independent of its content
 - Documentation and code are different views of the same underlying model, but the view is all that should be different
+
+### Great Expectations
+
+- In reality, the success of a project is measured by how well it meets the expectations of its users
+- **Gently Exceed Your Users' Expectations**
+- We need to work with them to come to a common understanding of the development process and the final deliverable, along with those expectations they have not yet verbalized
+- Listen to your users as the project progresses for clues about what features would really delight them
