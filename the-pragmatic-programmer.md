@@ -734,3 +734,13 @@ void processTransaction(BankAccount acct, int) {
 
 - **Test Early. Test Often. Test Automatically**
 - Tests that run with every build are much more effective than test plans that sit on a shelf
+
+### It's All Writing
+
+- We want to downplay the dichotomy between code and documentation, and instead treat them as two views of the same model
+- Treat English as Just Another Programming Language
+- All documentation is a mirror of the code
+- Our goal is always to work on the model—whether the model is the code itself or some other document—and have all views updated automatically
+- We want the writers to embrace the same basic principles that a Pragmatic Programmer does—especially honoring the **DRY principle**, **orthogonality**, the **model-view concept**, and the use of **automation** and **scripting**
+- This is a bad idea: a document's presentation should be independent of its content
+- Documentation and code are different views of the same underlying model, but the view is all that should be different
