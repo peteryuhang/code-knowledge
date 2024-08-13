@@ -57,3 +57,111 @@ if (isoctal(c)) ...
 // good
 #define isoctal(c) ((c) >= '0' && (c) <= '7')
 ```
+
+### Expressions and Statements
+
+- Indent to show structure. A consistent indentation style is the lowest-energy way to make a program's structure self-evident
+
+```c
+// bad
+for(n++;n<100;field[n++]='\0');
+*i = '\0'; return('\n');
+
+// improve in structure, but still bad
+for(n++; n < 100; field[n++] = '\0')
+  ;
+*i = '\0';
+return('\n');
+
+// better: the loop takes a more conventional form and is thus easier to grasp
+for (n++; n < 100; n++)
+  field[n] = '\0';
+*i = '\0';
+return '\n';
+```
+
+- **Use the natural form for expressions**. Write expressions as you might speak them aloud
+- Conditional expressions that include negations are always hard to understand:
+
+```c
+// bad
+if (!(block-id < actblks) || !(block-id >= unblocks))
+  ...
+
+// good
+if ((block-id >= actblks) || (blockkid < unblocks))
+  ...
+```
+
+- **Parenthesize to resolve ambiguity**
+
+```c
+// bad: not clear
+leap_year = y % 4 == 0 && y % 100 != 0 || y % 400 == 0;
+
+// good: Removed some of the blanks: grouping the operands of higher-precedence operators helps the reader to see the structure more quickly
+leap_year = ((y%4 == 0) && (y%100 != 0)) || (y%400 == 0);
+```
+
+- **Break up complex expressions**
+
+```c
+// bad
+*x += (*xp=(2*k < (n-m) ? c[k+1] : d[k--]));
+
+// good: It's easier to grasp when broken into several pieces
+if (2*k < n-m)
+  *xp = c[k+1];
+else
+  *xp = d[k--];
+*x += *xp;
+```
+
+- **Be clear**. The goal is to write clear code, not clever code
+
+```c
+// bad
+subkey = subkey >> (bitoff - ((bitoff >> 3) << 3));
+
+// improved: easy to grasp
+subkey = subkey >> (bitoff & 0x7);
+
+// continue improved: be clear
+subkey >>= bitoff & 0x7
+```
+
+```c
+// bad
+child=(!LC&&!RC)?0:(!LC?RC:LC);
+
+// good
+if (LC == 0 && RC == 0)
+  child = 0;
+else if (LC == 0)
+  child = RC;
+else
+  child = LC;
+```
+
+- Clarity is not the same as brevity. Often the clearer code will be shorter, as in the bit-shifting example, but it can also be longer, as in the conditional expression recast as an if-else. The proper criterion is ease of understanding
+
+- **Be careful with side effects**
+
+```c
+// bad
+str[i++] = str[i++] = ' ';
+
+// good
+str[i++] = ' ';
+str[i++] = ' ';
+
+// bad: If i is initially 3, the array element might be set to 3 or 4
+array[i++] = i;
+
+// bad: Part of the expression modifies yr and another part uses it. All the arguments to scanf are evaluated before the routine is called
+scanf("%d %d", &yr, &profit[yr]);
+
+// good(fix)
+scanf("%d", &yr);
+scanf("%d", &profit[yr]);
+```
