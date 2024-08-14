@@ -165,3 +165,33 @@ scanf("%d %d", &yr, &profit[yr]);
 scanf("%d", &yr);
 scanf("%d", &profit[yr]);
 ```
+
+### Consistency and Idioms
+
+- **Use a consistent indentation and brace style**
+- Programmers have always argued about the layout of programs, but the specific style is much less important than its consistent application
+- If you work on a program you didn't write, preserve the style you find there
+
+- **Use idioms for consistency**
+  - A central part of learning any language is developing a familiarity with its idioms
+
+```c
+// bad
+i = O;
+while (i <= n-1)
+  array[i++] = 1.0;
+
+// bad
+for (i = 0; i < n; )
+  array[i++] = 1.0;
+
+// bad
+for (i = n; --i >= 0; )
+  array[i] = 1.0;
+
+// good
+for (i = 0; i < n; i++)
+  array[i] = 1.0;
+```
+
+
