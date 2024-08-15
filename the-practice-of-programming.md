@@ -227,3 +227,37 @@ else {
   fclose(fout);
 }
 ```
+
+### Function Macros
+
+- With modern machines and compilers, the drawbacks of function macros outweigh their benefits
+- **Avoid function macros**
+
+```c
+// bad: A parameter that appears more than once in the definition might be evaluated more than once
+#define isupper(c) ((c) >= 'A' && (c) <= 'Z')
+while (isupper(c = getchar())) // Each time an input character is greater than or equal to A, it will be discarded and another character read to be tested against Z
+  ...
+
+while ((c = getchar()) != EOF && isupper(c)) // correct
+  ...
+
+// bad: This will perform the square root computation twice as often as necessary
+#define ROUND_TO_INT(x) ((int) ((x)+(((x)>O) ? O.5: -0.5)))
+  ...
+size = ROUND_TO_INT(sqrt(dx*dx + dy*dy));
+```
+
+- **Parenthesize the macro body and arguments**
+  - Macros work by textual substitution: the parameters in the definitionare replaced by the arguments of the call and the result replaces the original call, as text
+
+```c
+// incorrect
+#define square(x) (x) * (x)
+1/square(x) // equal to 1/(x) * (x)
+
+// correct
+#define square(x) ((x) * (x))
+```
+
+- If an operation is expensive or common enough to be wrapped up. use a function
