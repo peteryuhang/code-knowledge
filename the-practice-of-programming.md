@@ -361,3 +361,69 @@ double dbuf[100];
 for (i = 0;i < NELEMS(dbuf); i++)
   ...
 ```
+
+### Comments
+
+- The best comments aid the understanding of a program by briefly pointing out salient details or by providing a lager-scale view of the proceedings
+- **Don't belabor the obvious**
+  - Comments should add something that is not immediately evident from the code, or collect into one place information that is spread through the source
+- **Comment functions and global data**, eg.
+
+```c
+struct State { /* prefix +suffix list */
+  char *pref[NPREF]; /* prefix words */
+  Suffix *suf;       /* list of suffixes */
+  State *next;       /* next i n hash table */
+};
+
+// random: return an integer in the range [O...r-1]
+int random(int r) {
+  return (int)(Math.floor(Math.random()*r));
+}
+
+/*
+ * idct: Scaled integer implementation of
+ * Inverse two dimensional 8x8 Discrete Cosine Transform,
+ * Chen-Wang algorithm (IEEE ASSP-32, pp 803-816, Aug 1984)
+ *
+ * 32-bit integer arithmetic (8-bit coefficients)
+ * 11 multiplies, 29 adds per DCT
+ *
+ * Coefficients extended to 12 bits for
+ * IEEE 1180-1990 compliance
+ */
+static void idct(int b[8*8]) { ... }
+```
+
+- **Don't comment bad code, rewrite it**
+
+- **Don't contradict the code**
+  - Most comments agree with the code when they are written, but as bugs are fixed and the program evolves, the comments are often left in their original form, resulting in disagreement with the code
+  - Comments should not only agee with code,they should support it
+
+```c
+// bad & confused
+time(&now) ;
+strcpy(date, ctime(&now));
+/* get rid of trailing newline character copied from ctime */
+i = O;
+while(date[i] >= ' ')
+  i++;
+date[i] = '\0';
+
+// improved
+time(&now);
+strcpy(date, ctime(&now));
+/* get rid of trailing newline character copied from ctime */
+for (i= 0; date[i] != '\n'; i++)
+  ;
+date[i] = '\0';
+
+// better: made more direct
+time(&now) ;
+strcpy(date, ctime(&now)) ;
+/* ctime() puts newline at end of string; delete it */
+date[strlen(date)-1] = '\0' ;
+```
+
+- Good code needs fewer comments than bad code
