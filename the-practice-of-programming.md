@@ -261,3 +261,103 @@ size = ROUND_TO_INT(sqrt(dx*dx + dy*dy));
 ```
 
 - If an operation is expensive or common enough to be wrapped up. use a function
+
+### Magic Numbers
+
+- Magic tiumbers are the constants, array sizes, character positions, conversion factors, and other literal numeric values that appear in programs
+
+- **Give names to magic numbers**
+
+```c
+// bad
+fac = lim / 20; /* set scale factor */
+if (fac < 1)
+  fac = 1;
+/* generate histogram */
+for (i = 0, col = 0; i < 27; i++, j++) {
+  col += 3;
+  k = 21 - (let[i] / fac);
+  star = (let[i] == 0) ? ' ' : '*';
+  for (j = k; j < 22; j++)
+    draw(j, col, star);
+}
+draw(23, 2, ' '); /* label x axis */
+for (i = 'A'; i <= 'Z'; i++)
+  printf("%c ", i );
+
+// good
+enum {
+  MINROW    = 1,                /* top edge */
+  MINCOL    = 1,                /* left edge */
+  MAXROW    = 24,               /* bottom edge (<=) */
+  MAXCOL    = 80,               /* right edge (<=) */
+  LABELROW  = 1,                /* position of labels */
+  NLET      = 26,               /* size of alphabet */
+  HEIGHT    = MAXROW - 4,       /* height of bars */
+  WIDTH     = (MAXCOL-1)/NLET   /* width of bars */
+};
+  ...
+fac = (lim + HEIGHT-1) / HEIGHT;  /* set scale factor */
+if (fac < 1)
+  fac = 1;
+for (i= 0; i < NLET; i++) {
+  if (let[i] == 0)
+    continue;
+  for (j = HEIGHT - let[i]/fac; j < HEIGHT; j++)
+    draw(j+1 + LABELROW, (i+l)*WIDTH, '*') ;
+}
+draw(MAXROW-1, MINCOL+l, ' '); /* label x axis */
+for(i = 'A'; i <= 'Z'; i++)
+  printf("%c ",i);
+```
+
+- **Define numbers as constant, not macros**
+  - Macros are a dangerous way to program because they change the lexical structure of the program underfoot
+
+- **Use character constants, not integers**
+
+```c
+// bad
+if (c >= 65 && c <= 90)
+  ...
+
+// improved
+if (c >= 'A' && c <= 'Z')
+  ...
+
+// best
+if (isupper(c))
+  ...
+```
+
+- A related issue is that the number 0 appears often in programs, in many contexts
+  - The compiler will convert the number into the appropriate type, but it helps the reader to understand the role of each 0 if the type is explicit
+
+```c
+// bad
+str = 0;
+name[i] = O;
+x = 0;
+
+// good
+str = NULL;
+name[i] = '\0';
+x = 0.0;
+```
+
+- **Use the language to calculate the size of an object**
+- `sizeof(array[0])` may be better than `sizeof(int)` because it's one less thing to change if the type of the array changes
+
+```c
+// A convenient way to avoid inventing names for the numbers that determine array sizes
+char buf[1024];
+fgets(buf, sizeof(buf), stdin);
+
+// The array size is set in only one place; the rest of the code does not change if the size does
+// In fact the computation is done as the program is being compiled
+// This is an appropriate use for a macro because it does something that a function cannot: compute the size of an array from its declaration
+#define NELEMS(array) (sizeof(array) / sizeof(array[0]))
+double dbuf[100];
+for (i = 0;i < NELEMS(dbuf); i++)
+  ...
+```
