@@ -194,4 +194,36 @@ for (i = 0; i < n; i++)
   array[i] = 1.0;
 ```
 
+- **Use `else-ifs` for multi-way decisions**
 
+```c
+// bad
+if (argc == 3)
+  if ((fin = fopen(argv[1] , "r")) != NULL)
+    if ((fout = fopen(argv[2], "w")) != NULL) {
+      while ((c = getc(fin)) != EOF)
+        putc(c, fout);
+      fclose(fin);
+      fclose(fout);
+    } else
+      printf("Can't open output file %s\n", argv[2]);
+  else
+    printf("Can't open input file %s\n", argv[1]);
+else
+  printf("Usage: cp inputfile outputfile\n");
+
+// good: Changing the order in which the decisions are made leads to a clearer version
+// in which we have also corrected the resource leak in the original
+if (argc != 3)
+  printf("Usage: cp inputfile outputfile\n");
+else if ((fin = fopen(argv[1] , "r")) == NULL)
+  printf("Can't open input file %s\n", argv[1]);
+else if ((fin = fopen(argv[2] , "w")) == NULL)
+  printf("Can't open output file %s\n", argv[2]);
+else {
+  while ((c = getc(fin)) != EOF)
+    putc(c, fout);
+  fclose(fin);
+  fclose(fout);
+}
+```
