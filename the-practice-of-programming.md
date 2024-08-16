@@ -4,6 +4,7 @@
 
 - The purpose of style is to make the code easy to read for yourself and others, and good style is crucial to good programming
 - The principles of programming style are based on common sense guided by experience, not on arbitrary rules and prescriptions
+- If you think about style as you write code originally, and if you take the time to revise and improve it, you will develop good habits
 
 ### Names
 
@@ -427,3 +428,5 @@ date[strlen(date)-1] = '\0' ;
 ```
 
 - Good code needs fewer comments than bad code
+
+## Ch 2. Algorithms and Data Structures
