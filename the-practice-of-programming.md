@@ -496,3 +496,29 @@ void swap(int v[], int i,int j) {
   v[j] = temp;
 }
 ```
+
+### Libraries
+
+- Function `scmp` to cast the arguments and call `strcmp` to do the comparison
+
+```c
+/* scmp: string compare of *p1 and *p2 */
+int scmp(const void *p1, const void *p2) {
+  char *v1, *v2;
+  v1 = *(char **) p1;
+  v2 = *(char **) p2;
+  return strcmp(v1, v2);
+}
+```
+
+- Write comparison function as `return v1-v2;` will resulting overflow, which would produce an incorrect answer.
+- Direct comparison is longer but safe
+
+```c
+if (v1 < v2)
+  return -1;
+else if (v1 == v2)
+  return 0;
+else
+  return 1;
+```
