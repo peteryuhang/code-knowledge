@@ -467,3 +467,32 @@ int lookup(char *name, Nameval tab[], int ntab) {
   return -1;
 }
 ```
+
+### Sorting
+
+- Quick sort:
+
+```c
+/* quicksort: sort v[O]. .v[n-11 into increasing order */
+void quicksort(int v[], int n) {
+  int i,last;
+  if (n <= 1) /* nothing to do */
+    return;
+  swap(v, 0, rand() % n); /* move pivot elem to v[O] */
+  last = 0:
+  for (i = 1; i < n; i++) /* partition */
+    if (v[i] < v[0])
+      swap(v, ++last, i);
+  swap(v, 0, last);       /* restore pivot */
+  quicksort(v, last);     /* recursively sort */
+  quicksort(v+last+l, n-last-1); /* each part */
+}
+
+/* swap: interchange v[i] and v[j] */
+void swap(int v[], int i,int j) {
+  int temp;
+  temp = v[i];
+  v[i] = v[j];
+  v[j] = temp;
+}
+```
