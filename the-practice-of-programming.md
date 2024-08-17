@@ -430,3 +430,40 @@ date[strlen(date)-1] = '\0' ;
 - Good code needs fewer comments than bad code
 
 ## Ch 2. Algorithms and Data Structures
+
+### Searching
+
+- **Sequential search** - linear search
+
+```c
+int lookup(char *word, char *array[]) {
+  int i;
+  for (i = 0; array[i] != NULL; i++)
+    if (strcmp(word, array[i]) == 0)
+      return i;
+
+  return -1;
+}
+```
+
+- **Binary search**: the table must be sorted, and we must know how long the table is
+
+```c
+int lookup(char *name, Nameval tab[], int ntab) {
+  int low, high, mid, cmp;
+
+  low = 0;
+  high = ntab - 1;
+  while (low <= high) {
+    mid = (low + high) / 2;
+    cmp = strcmp(name, tab[mid].name);
+    if (cmp < 0)
+      high = mid - 1;
+    else if (cmp > 0)
+      low = mid + 1;
+    else /* found match */
+      return mid;
+  }
+  return -1;
+}
+```
