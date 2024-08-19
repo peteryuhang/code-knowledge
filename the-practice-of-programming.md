@@ -594,3 +594,151 @@ for (j = i; j < nvtab.nval-1; j++)
 ```
 
 - An alternative to moving the elements of the array is to mark deleted elements as unused. Then to add a new item, first search for an unused slot and grow the vector only if none is found
+
+### Lists
+
+- Structure of **singly-linked list**:
+
+![](/assets/the-practice-of-programming/structure_of_singly_linked_list.png)
+
+- List is better for items change frequently; Array is better for relatively static data
+
+- Rather than defining an explicit List type, the usual way lists are used in C is to start with a type for the elements, and add a pointer that links to the next element
+
+```c
+typedef struct Nameval Nameval;
+struct Nameval {
+  char *name;
+  int value;
+  Nameval *next; /* in list */
+};
+```
+
+- Way to construct an item:
+
+```c
+/* newitem: create new item from name and value */
+Nameval *newitem(char tname, int value) {
+  Nameval *newp;
+  newp = (Nameval *) emalloc(sizeof(Nameval));
+  newp->name = name;
+  newp->value = value;
+  newp->next = NULL;
+  return newp;
+}
+```
+
+- `emalloc` - calls malloc , and if the allocation fails, it reports the error and exits the program
+- The simplest and fastest way to assemble a list is to add each new element to the front
+
+```c
+/* addfront: add newp to front of listp */
+Nameval *addfront(Nameval *listp, Nameval *newp) {
+  newp->next = listp;
+  return newp;
+}
+
+// usage
+nvlist = addfront(nvlist, newitem("smi1ey", Ox263A));
+```
+
+- This design works even if the existing list is empty (null) and makes it easy to combine the functions in expressions
+- Adding an item to the end of a list is an `O(n)` procedure, since we must walk the list to find the end:
+
+```c
+/* addend: add newp to end of listp */
+Nameval *addend(Nameval *listp, Nameval *newp) {
+  Nameval *p;
+  if (listp == NULL)
+    return newp;
+  for (p = listp; p->next != NULL; p = p->next)
+    ;
+  p->next = newp;
+  return listp;
+}
+```
+
+- To search for an item with a specific name, follow the next pointers:
+
+```c
+/* lookup: sequential search for name in listp */
+Nameval *lookup(Nameval *listp, char tname) {
+  for ( ; listp != NULL; listp = listp->next)
+    if (strcmp(name, lisp->name) == 0)
+      return listp;
+  return NULL;     /* no match */
+}
+```
+
+- An alternative is to write one function, `apply`, that walks a list and calls another function for each list element:
+
+```c
+/* apply: execute fn for each element of listp */
+void apply(Nameval *listp, void (*fn)(Nameval *, void *), void *arg) {
+  for (; listp != NULL; listp = listp->next)
+    (*fn)(listp, arg); /* call the function */
+}
+```
+
+- The usage of `apply`, eg. print the elements of a list:
+
+```c
+/* printnv: print name and value using format in arg */
+void printnv(Nameval *p, void *arg) {
+  char *fmt;
+  fmt = (char *) arg;
+  printf(fmt, p->name, p->value);
+}
+
+apply(nvl ist, printnv, "%s: %x\n");
+```
+
+- To destroy a list we must use more care:
+
+```c
+/* freeall: free all elements of listp */
+void freeall(Nameval *ilstp) {
+  Nameval *next;
+  for ( ; listp != NULL; listp = next) {
+    next = listp->next;
+    /* assumes name is freed elsewhere */
+    free(listp);
+  }
+}
+```
+
+- Notice that `freeall` does not free `listp->name`. It assumes that the name field of each `Nameval` will be freed somewhere else, or was never allocated
+
+- Since memory cannot be used after it has been freed, the below gonna be wrong:
+
+```c
+// Wrong
+for ( ; listp != NULL; listp = listp->next)
+  free(listp);
+```
+
+- Deleting a single element from a list is more work than adding one:
+
+```c
+/* delitem: delete first "name" from listp */
+Nameval *delitem(Nameval *listp, char *name) {
+  Nameval *p, *prev;
+  prev = NULL;
+  for (p = listp; p != NULL; p = p->next) {
+    if (strcmp(name, p->name) == 0) {
+      if (prev == NULL)
+        listp = p->next;
+      else
+        prev->next = p->next;
+      free(p);
+      return listp;
+    }
+    prev = p;
+  }
+  eprintf("delitem: %s not in list", name);
+  return NULL; /* can't get here */
+}
+```
+
+- Doubly-linked lists require more overhead, but finding the last element and deleting the current element are `O(1)` operations
+
