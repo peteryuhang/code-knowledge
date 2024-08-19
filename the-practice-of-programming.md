@@ -522,3 +522,75 @@ else if (v1 == v2)
 else
   return 1;
 ```
+
+### Growing Arrays
+
+- The following code defines a growable array of Nameval items; new items are added at the end of the array, which is grown as necessary to make room
+
+```c
+typedef struct Nameval Nameval;
+struct Nameval {
+  char *name;
+  int value;
+};
+
+struct NVtab {
+  int nval;          /* current number of values */
+  int max;           /* allocated number of values */
+  Nameval tnameval;  /* array of name-value pairs */
+} nvtab;
+
+enum  { NVINIT = 1, NVGROW = 2 };
+
+/* addname: add new name and value to nvtab */
+int addname(Nameval newname) {
+  Nameval tnvp;
+  if (nvtab.nameval == NULL) { /* first time */
+    nvtab.nameval = (Name *) malloc(NVINIT * sizeof(Nameval));
+    if (nvtab.nameval == NULL)
+      return -1;
+    nvtab.max = NVINIT;
+    nvtab.nval = 0;
+  } else if (nvtab.nval >= nvtab.max) { /* grow */
+    nvp = (Nameval *) realloc(nvtab.nameval, (NVGROW*nvtab.max) * sizeof(Nameval));
+    if (nvp == NULL)
+      return -1;
+    nvtab.max *= NVGROW;
+    nvtab.nameval = nvp;
+  }
+  nvtab.nameval[nvtab.nval] = newname;
+  return nvtab.nval++;
+}
+```
+
+- The function `addname` returns the index of the item just added, or -1 if some error occurred
+- Deleting a name can be tricky:
+
+```c
+/* delname: remove first matching nameval from nvtab */
+int delname(char *name) {
+  int i;
+  for (i = 0; i < nvtab.nval; i++) {
+    if (strcmp(nvtab.nameval[i].name, name) == 0) {
+      memmove(nvtab.nameval+i, nvtab.nameval+i+1, (nvtab.nval-(i+1)) * sizeof(Nameval))
+      nvtab.nval--;
+      return 1;
+    }
+  }
+  return 0;
+}
+```
+
+- The call to `memmove` squeezes the array by moving the elements down one position
+- `memmove` is a standard library routine for copying arbitrary-sized blocks of memory
+- The ANSI C standard defines two functions: `memcpy`, which is fast but might overwrite memory if source and destination overlap; and `memmove`, which might be slower but will always be correct
+
+- We would replace the memmove call with the following loop:
+
+```c
+int j;
+for (j = i; j < nvtab.nval-1; j++)
+  nvtab.nameval[j] = nvtab.nameval[j+1];
+```
+
+- An alternative to moving the elements of the array is to mark deleted elements as unused. Then to add a new item, first search for an unused slot and grow the vector only if none is found
