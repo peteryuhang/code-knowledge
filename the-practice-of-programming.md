@@ -742,3 +742,6 @@ Nameval *delitem(Nameval *listp, char *name) {
 
 - Doubly-linked lists require more overhead, but finding the last element and deleting the current element are `O(1)` operations
 
+## Trees
+
+
