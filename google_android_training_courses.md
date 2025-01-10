@@ -55,4 +55,10 @@ println(birthdayGreeting("Rex", 2))
 
 ### Setup Android Studio
 
+- `onCreate()` function is the entry point to Android app and calls other functions to build the user interface
+- `setContent()` function within the `onCreate()` function is used to define your layout through composable functions
+- **Composable** annotation tells the Kotlin compiler that this function is used by Jetpack Compose to generate the UI
+  - `@Composable` functions can't return anything
+- A Modifier is used to augment or decorate a composable
+- [How to connect your Android device](https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-1-pathway-2%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-connect-device#0)
 
