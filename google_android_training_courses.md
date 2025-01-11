@@ -62,3 +62,92 @@ println(birthdayGreeting("Rex", 2))
 - A Modifier is used to augment or decorate a composable
 - [How to connect your Android device](https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-1-pathway-2%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-connect-device#0)
 
+### Build a Basic Layout
+
+- A composable function:
+  - Describes some part of your UI
+  - Doesn't return anything
+  - Takes some input and generates what's shown on the screen
+
+- By default, the **SP** unit is the same size as the **DP** unit, but it resizes based on the user's preferred text size under phone settings
+- [Add image & resource to Android App](https://developer.android.com/codelabs/basic-android-kotlin-compose-add-images?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-1-pathway-3%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-add-images#1)
+
+
+```kt
+class MainActivity : ComponentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      HappyBirthdayTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+          modifier = Modifier.fillMaxSize(),
+          color = MaterialTheme.colorScheme.background
+        ) {
+          GreetingImage(
+            stringResource(R.string.happy_birthday_text),
+            stringResource(R.string.signature_text)
+          )
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun GreetingText(message: String, from: String, modifier: Modifier = Modifier) {
+    // Create a column so that texts don't overlap
+    Column(
+      verticalArrangement = Arrangement.Center,
+      modifier = modifier
+    ) {
+      Text(
+        text = message,
+        fontSize = 100.sp,
+        lineHeight = 116.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(top = 16.dp)
+      )
+      Text(
+        text = from,
+        fontSize = 36.sp,
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .padding(end = 16.dp)
+            .align(alignment = Alignment.End)
+
+      )
+    }
+}
+
+@Composable
+fun GreetingImage(message: String, from: String, modifier: Modifier = Modifier) {
+    // Create a box to overlap image and texts
+    Box(modifier) {
+      Image(
+        painter = painterResource(id = R.drawable.androidparty),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        alpha = 0.5F
+      )
+      GreetingText(
+        message = message,
+        from = from,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+      )
+    }
+}
+
+@Preview(showBackground = false)
+@Composable
+private fun BirthdayCardPreview() {
+    HappyBirthdayTheme {
+      GreetingImage(
+        stringResource(R.string.happy_birthday_text),
+        stringResource(R.string.signature_text)
+      )
+    }
+}
+```
