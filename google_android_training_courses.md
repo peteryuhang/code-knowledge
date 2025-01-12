@@ -154,6 +154,8 @@ private fun BirthdayCardPreview() {
 
 ### Kotlin Fundamentals
 
+#### Conditional Statements
+
 - `when` statement, eg:
 
 ```kt
@@ -223,5 +225,71 @@ fun main() {
     else -> "Invalid traffic-light color"
   }
   println(message)
+}
+```
+
+#### Nullability
+
+- In Kotlin, there's a distinction between **nullable** and **non-nullable** types:
+  - Nullable types are variables that can hold `null`
+  - Non-null types are variables that can't hold `null`
+
+- To declare nullable variables in Kotlin, you need to add a `?` operator to the end of the type, eg
+
+```kt
+fun main() {
+  var favoriteActor: String? = "Sandra Oh"
+  favoriteActor = null
+}
+```
+
+- Use the `?.` safe call operator to access methods or properties of nullable variables, eg.
+  - This operator allows safer access to nullable variables because the Kotlin compiler stops any attempt of member access to null references and returns null for the member accessed
+
+```kt
+fun main() {
+  var favoriteActor: String? = "Sandra Oh"
+  println(favoriteActor?.length)
+}
+```
+
+- Use the `!!` not-null assertion operator to access methods or properties of nullable variables
+  - It means that you assert that the value of the variable isn't null, regardless of whether it is or isn't
+  - This operator may result in a `NullPointerException` error being thrown if the nullable variable is indeed null
+
+```kt
+fun main() {
+  var favoriteActor: String? = "Sandra Oh"
+  println(favoriteActor!!.length)
+}
+```
+
+- Null check can be combine with `if/else` statement:
+
+```kt
+fun main() {
+  var favoriteActor: String? = "Sandra Oh"
+
+  val lengthOfName = if (favoriteActor != null) {
+    favoriteActor.length
+  } else {
+    0
+  }
+
+  println("The number of characters in your favorite actor's name is $lengthOfName.")
+}
+```
+
+- You can convert a nullable variable to a non-nullable type with `if/else` expressions
+
+- With the `?:` Elvis operator, you can add a default value when the `?.` safe-call operator returns null, eg
+
+```kt
+fun main() {
+  var favoriteActor: String? = "Sandra Oh"
+
+  val lengthOfName = favoriteActor?.length ?: 0
+
+  println("The number of characters in your favorite actor's name is $lengthOfName.")
 }
 ```
