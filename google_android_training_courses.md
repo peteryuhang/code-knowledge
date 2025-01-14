@@ -296,4 +296,40 @@ fun main() {
 
 #### Classes and Objects
 
+- Class basic example:
+
+```kt
+class SmartDevice {
+  // The variables of val type are read-only variables, so they don't have set() functions
+  val name = "Android TV"
+  val category = "Entertainment"
+  var deviceStatus = "online"
+  var speakerVolume = 2
+  // When you don't define the getter and setter function for a property, the Kotlin compiler internally creates the functions
+  //  get() = field  
+  //  set(value) {
+  //      field = value    
+  //  }
+
+  fun turnOn() {
+    println("Smart device is turned on.")
+  }
+
+  fun turnOff() {
+    println("Smart device is turned off.")
+  }
+}
+
+fun main() {
+  val smartTvDevice = SmartDevice()
+  println("Device name is: ${smartTvDevice.name}")
+  smartTvDevice.turnOn()
+  smartTvDevice.turnOff()
+}
+```
+
+- Kotlin properties use a backing field to hold a value in memory
+  - A backing field is basically a class variable defined internally in the properties
+  - A backing field is scoped to a property, which means that you can only access it through the `get()` or `set()` property functions
+  - Don't use the property name to get or set a value, otherwise code enters an endless loop
 
