@@ -425,3 +425,34 @@ class SmartLightDevice(deviceName: String, deviceCategory: String) :
   }
 }
 ```
+
+- Kotlin provides four visibility modifiers:
+  - `public`: Default visibility modifier. Makes the declaration accessible everywhere
+  - `private`: Makes the declaration accessible in the same class or source file
+  - `protected`: Makes the declaration accessible in subclasses
+  - `internal`: Makes the declaration accessible in the same module
+
+- eg.
+
+```kt
+// properties and methods eg
+open class SmartDevice(val name: String, val category: String) {
+  var deviceStatus = "online"
+    protected set
+  
+  protected fun nextChannel() {
+    channelNumber++
+    println("Channel number increased to $channelNumber.")
+  } 
+}
+
+// constructor eg
+open class SmartDevice protected constructor (val name: String, val category: String) {
+  // ...
+}
+
+// class eg
+internal open class SmartDevice(val name: String, val category: String) {
+  // ...
+}
+```
