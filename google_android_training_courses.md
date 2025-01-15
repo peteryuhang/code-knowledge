@@ -333,3 +333,49 @@ fun main() {
   - A backing field is scoped to a property, which means that you can only access it through the `get()` or `set()` property functions
   - Don't use the property name to get or set a value, otherwise code enters an endless loop
 
+- Constructor syntax:
+
+```kt
+// default constructor, can be omitted
+class SmartDevice constructor() {
+  // ...
+}
+
+// constructor with parameters
+class SmartDevice(val name: String, val category: String) {
+  // ..
+}
+
+// instantiate the object
+SmartDevice("Android TV", "Entertainment")
+SmartDevice(name = "Android TV", category = "Entertainment")
+```
+
+- Two type of constructor in Kotlin
+  - **Primary constructor**: 
+    - A class can have only one
+    - Defined as part of the class header
+    - Can be a default or parameterized
+    - Doesn't have body, doesn't contain any code
+  - **Secondary constructor**:
+    - A class can have multiple
+    - If the class has a primary constructor, each secondary constructor needs to initialize the primary constructor
+
+![](/assets/google-android-training-courses/kotlin_class_constructor_syntax.png)
+
+- eg. Secondary constructor in the convert statusCode parameter to string representation
+
+```kt
+class SmartDevice(val name: String, val category: String) {
+  var deviceStatus = "online"
+
+  constructor(name: String, category: String, statusCode: Int) : this(name, category) {
+    deviceStatus = when (statusCode) {
+      0 -> "offline"
+      1 -> "online"
+      else -> "unknown"
+    }
+  }
+  ...
+}
+```
