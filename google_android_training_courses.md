@@ -379,3 +379,49 @@ class SmartDevice(val name: String, val category: String) {
   ...
 }
 ```
+
+- In Kotlin, all the classes are final by default, which means that you can't extend them, so you have to define the relationships between them
+- The `open` keyword informs the compiler that this class is extendable, so now other classes can extend it
+
+```kt
+// Create a SmartTvDevice subclass that extends the SmartDevice superclass:
+class SmartTvDevice(deviceName: String, deviceCategory: String) :
+  SmartDevice(name = deviceName, category = deviceCategory) {
+}
+// The constructor definition for SmartTvDevice doesn't specify whether the properties are mutable or immutable
+// This means that the deviceName and deviceCategory parameters are merely constructor parameters instead of class properties
+// You won't be able to use them in the class, but simply pass them to the superclass constructor
+```
+
+- Override superclass methods or properties from subclasses, eg.
+
+```kt
+open class SmartDevice(val name: String, val category: String) {
+  var deviceStatus = "online"
+
+  open val deviceType = "unknown"
+
+  open fun turnOn() {
+    // function body
+  }
+
+  open fun turnOff() {
+    // function body
+  }
+}
+
+class SmartLightDevice(deviceName: String, deviceCategory: String) :
+  SmartDevice(name = deviceName, category = deviceCategory) {
+
+  override val deviceType = "Smart TV"
+
+  override fun turnOn() {
+    // ...
+  }
+
+  override fun turnOff() {
+    // Reuse superclass code in subclasses with the super keyword
+    super.turnOff()
+  }
+}
+```
