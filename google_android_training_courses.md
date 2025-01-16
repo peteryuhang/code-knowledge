@@ -456,3 +456,49 @@ internal open class SmartDevice(val name: String, val category: String) {
   // ...
 }
 ```
+
+- **Property delegates**. A property delegate lets you reuse the getter and setter code in multiple classes, eg:
+
+```kt
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
+
+open class SmartDevice(val name: String, val category: String) {
+  // ...
+}
+
+class SmartTvDevice(deviceName: String, deviceCategory: String) :
+  SmartDevice(name = deviceName, category = deviceCategory) {
+
+  override val deviceType = "Smart TV"
+
+  private var speakerVolume by RangeRegulator(initialValue = 2, minValue = 0, maxValue = 100)
+
+  private var channelNumber by RangeRegulator(initialValue = 1, minValue = 0, maxValue = 200)
+
+  // ...
+}
+
+class RangeRegulator(
+  initialValue: Int,
+  private val minValue: Int,
+  private val maxValue: Int
+) : ReadWriteProperty<Any?, Int> {  // Implement the ReadOnlyProperty interface for the val type
+  var fieldData = initialValue
+
+  // The KProperty is an interface that represents a declared property and lets you access the metadata on a delegated property
+  override fun getValue(thisRef: Any?, property: KProperty<*>): Int {
+    return fieldData
+  }
+
+  override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
+    if (value in minValue..maxValue) {
+      fieldData = value
+    }
+  }
+}
+
+fun main() {
+  // ...
+}
+```
