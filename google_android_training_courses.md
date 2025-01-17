@@ -591,3 +591,19 @@ val treatFunction = trickOrTreat(false, { "$it quarters" })
 // but doesn't change what the code does.
 val treatFunction = trickOrTreat(false) { "$it quarters" }
 ```
+
+- Kotlin provides several useful **higher-order** functions, which you can take advantage of with your newfound knowledge of lambdas
+  - When a function returns a function or takes a function as an argument, it's called a **higher-order** function
+
+- The `repeat()` function is a concise way to express a for loop with functions:
+
+```kt
+// for (iteration in start..end) {// ...} => repeat(times) {iteration -> // ...}
+// repeat(times: Int, action: (Int) -> Unit)
+fun main() {
+  val treatFunction = trickOrTreat(false) { "$it quarters" }
+  repeat(4) {
+    treatFunction()
+  }
+}
+```
