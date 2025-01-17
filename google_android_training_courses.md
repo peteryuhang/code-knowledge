@@ -502,3 +502,74 @@ fun main() {
   // ...
 }
 ```
+
+### Function Types & Lambda Expressions
+
+- Refer to a function as a value, you need to use the function reference operator `::`:
+
+```kt
+fun main() {
+  val trickFunction = ::trick
+}
+
+fun trick() {
+  println("No treats!")
+}
+```
+
+- We can define function with a lambda expression:
+
+```kt
+fun main() {
+  val trickFunction = trick
+  trick()
+}
+
+val trick = {
+  println("No treats!")
+}
+```
+
+- Function types consist of a set of parentheses that contain an optional parameter list, the `->` symbol, and a return type
+
+```kt
+val treat: () -> Unit = {
+  println("Have a treat!")
+}
+```
+
+- Function can be used like other data type:
+
+```kt
+fun trickOrTreat(isTrick: Boolean, extraTreat: (Int) -> String): () -> Unit {
+  if (isTrick) {
+    return trick
+  } else {
+    println(extraTreat(5))
+    return treat
+  }
+}
+
+val trick = {
+  println("No treats!")
+}
+
+val treat = {
+  println("Have a treat!")
+}
+```
+
+- Return can't be used in lambda expressions. Instead, the result of the last expression in the function becomes the return value:
+
+```kt
+// For multiple parameters, parameters are given names in the order that they occur
+val coins: (Int) -> String = { quantity ->
+  "$quantity quarters"
+}
+```
+
+- Like other data types, function types can be declared as nullable:
+
+```kt
+fun trickOrTreat(isTrick: Boolean, extraTreat: ((Int) -> String)?): () -> Unit {  }
+```
