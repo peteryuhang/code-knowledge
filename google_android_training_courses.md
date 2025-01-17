@@ -573,3 +573,21 @@ val coins: (Int) -> String = { quantity ->
 ```kt
 fun trickOrTreat(isTrick: Boolean, extraTreat: ((Int) -> String)?): () -> Unit {  }
 ```
+
+- Lambda expressions provide a variety of ways to make your code more concise:
+
+```kt
+// When a function has a single parameter and you don't provide a name, use it name instead
+val coins: (Int) -> String = {
+  "$it quarters"
+}
+
+// Can be passed directly in the call
+val treatFunction = trickOrTreat(false, { "$it quarters" })
+
+// You can place the lambda expression after the closing parenthesis to call the function
+// when a function type is the last parameter of a function
+// This makes your code more readable because it separates the lambda expression from the other parameters
+// but doesn't change what the code does.
+val treatFunction = trickOrTreat(false) { "$it quarters" }
+```
