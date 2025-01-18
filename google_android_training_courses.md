@@ -503,7 +503,7 @@ fun main() {
 }
 ```
 
-### Function Types & Lambda Expressions
+#### Function Types & Lambda Expressions
 
 - Refer to a function as a value, you need to use the function reference operator `::`:
 
@@ -607,3 +607,4 @@ fun main() {
   }
 }
 ```
+
