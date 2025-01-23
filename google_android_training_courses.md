@@ -658,3 +658,10 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
 }
 ```
 
+- [Use the debugger in Android Studio](https://developer.android.com/codelabs/basic-android-kotlin-compose-intro-debugger?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-2-pathway-2%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-intro-debugger#3)
+
+- Useful features in debuggers:
+  - **Step Into**: Enter the call function and step by step
+  - **Step Over**: Moves the execution to the next line of code (execute the call function instead enter)
+  - **Step Out**: Does the opposite of the Step Into (execute the remaining part and return to outer function)
+
