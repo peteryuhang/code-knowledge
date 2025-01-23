@@ -610,3 +610,51 @@ fun main() {
 
 ### Add a Button to an App
 
+- Composables are stateless by default, but it can store an object in memory using the `remember` composable
+- `mutableStateof()` function returns an observable
+  - When the value of observable variable changes, a recomposition is triggered, the value reflected, and the UI refreshes
+
+```kt
+@Preview
+@Composable
+fun DiceRollerApp() {
+  DiceWithButtonAndImage(modifier = Modifier
+    .fillMaxSize()                       // The layout fills the entire screen
+    // The wrapContentSize() method specifies that the available space should
+    // at least be as large as the components inside of it
+    .wrapContentSize(Alignment.Center)
+  )
+}
+
+@Composable
+fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
+  Column (
+    modifier = modifier,
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    var result by remember {
+      mutableStateOf(1)
+    }
+    val imageResource = when (result) {
+      1 -> R.drawable.dice_1
+      2 -> R.drawable.dice_2
+      3 -> R.drawable.dice_3
+      4 -> R.drawable.dice_4
+      5 -> R.drawable.dice_5
+      else -> R.drawable.dice_6
+    }
+    Image(
+      painter = painterResource(id = imageResource),
+      // descriptions to their respective UI components to increase accessibility
+      contentDescription = result.toString()
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(
+      onClick = { result = (1..6).random() }
+    ) {
+      Text(stringResource(id = R.string.roll))
+    }
+  }
+}
+```
+
