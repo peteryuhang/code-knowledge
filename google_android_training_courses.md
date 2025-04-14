@@ -668,3 +668,56 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
 ### Interacting with UI and State
 
 #### State in Compose
+
+- State in an app is any value that can change over time
+- The only way to modify the Composition is through recomposition
+  - Compose needs to know what state to track so that it can schedule the recomposition when it receives an update
+  - Composable functions can store an object across recompositions with the `remember`
+
+```kt
+@Composable
+fun EditNumberField(modifier: Modifier = Modifier) {
+  // Use remember { }, the change survives the recomposition and state not re-initialized to ""
+  // by is a Kotlin property delegation
+  // The default getter and setter functions for the amountInput property are delegated to the remember class's getter and setter functions, respectively
+  var amountInput by remember { mutableStateOf("") }
+
+  TextField(
+    // Compose keeps track of each composable that reads state value properties and triggers a recomposition when its value changes
+    value = amountInput,
+    // The onValueChange callback is triggered when the text box's input changes. In the lambda expression, the it variable contains the new value
+    onValueChange = { amountInput = it },
+    label = { Text(stringResource(R.string.bill_amount)) },
+    // This condenses the text box to a single, horizontally scrollable line from multiple lines
+    singleLine = true,
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    modifier = modifier
+  )
+}
+```
+
+- You should hoist the state when you need to:
+  - **Share the state with multiple composable functions**
+  - **Create a stateless composable that can be reused in your app**
+- A stateless composable is a composable ​​that doesn't store its own state. It displays whatever state it's given as input arguments
+  - Composable functions can be made stateless by extracting state from them
+
+- eg. we can make previous composable stateless by extracting and hoisting state:
+
+```kt
+@Composable
+fun EditNumberField(
+  value: String,
+  onValueChange: (String) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  TextField(
+    label = { Text(stringResource(R.string.bill_amount)) },
+    singleLine = true,
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    value = value,
+    onValueChange = onValueChange,
+    modifier = modifier
+  )
+}
+```
