@@ -721,3 +721,16 @@ fun EditNumberField(
   )
 }
 ```
+
+#### Write automated tests
+
+- Type of automated tests:
+  - **Local tests**
+    - Test functions, classes, and properties
+    - Run in a development environment without the need for a device or emulator
+  - Instrumentation tests
+    - UI test
+    - Test parts of an app that depend on the Android API, and its platform APIs and services
+    - UI tests launch an app or part of an app, simulate user interactions, and check whether the app reacted appropriately
+    - When run an instrumentation test on Android, the test code is actually built into its own Android Application Package (APK) like a regular Android app
+
