@@ -801,4 +801,160 @@ class TipUITests {
 
 ### More Kotlin fundamentals
 
+#### Generic data type
 
+- Generic allow a data type to specify an unknown placeholder data type that can be used with its properties and methods
+
+- eg. 
+
+```kt
+class Question<T>(
+  val questionText: String,
+  val answer: T,
+  val difficulty: String
+)
+```
+
+#### Enum constant
+
+- Use an **enum constant**, which makes the maintain more easy
+
+```kt
+enum class Difficulty {
+  EASY, MEDIUM, HARD
+}
+
+class Question<T>(
+  val questionText: String,
+  val answer: T,
+  val difficulty: Difficulty
+)
+```
+
+#### Data class
+
+- Defining a class as a **data class** allows the Kotlin compiler to make certain assumptions, and to automatically implement some methods
+  - eg. `toString()`, `hashCode()`, `equals()`, `copy()`
+  - Data class only contains data
+  - A data class cannot be abstract, open, sealed, or inner
+
+```kt
+data class Question<T>(
+  val questionText: String,
+  val answer: T,
+  val difficulty: Difficulty
+)
+```
+
+#### Singleton object
+
+- Define a singleton object
+  - A singleton object can't have a constructor as you can't create instances directly
+
+- eg.
+
+```kt
+object StudentProgress {
+  var total: Int = 10
+  var answered: Int = 3
+}
+
+fun main() {
+  println("${StudentProgress.answered} of ${StudentProgress.total} answered.")
+}
+```
+
+- Define a singleton object inside another class using a companion object
+  -  A companion object allows you to access its properties and methods from inside the class
+
+```kt
+class Quiz {
+  val question1 = Question<String>("Quoth the raven ___", "nevermore", Difficulty.MEDIUM)
+  val question2 = Question<Boolean>("The sky is green. True or false", false, Difficulty.EASY)
+  val question3 = Question<Int>("How many days are there between full moons?", 28, Difficulty.HARD)
+
+  companion object StudentProgress {
+    var total: Int = 10
+    var answered: Int = 3
+  }
+}
+
+fun main() {
+  println("${Quiz.answered} of ${Quiz.total} answered.")
+}
+```
+
+#### Extend classes
+
+- Define an extension property
+
+```kt
+val Quiz.StudentProgress.progressText: String
+  get() = "${answered} of ${total} answered"
+```
+
+- Define an extension function
+
+```kt
+fun Quiz.StudentProgress.printProgressBar() {
+  repeat(Quiz.answered) { print("▓") }
+  repeat(Quiz.total - Quiz.answered) { print("▒") }
+  println()
+  println(Quiz.progressText)
+}
+```
+
+- Having the option of extension properties and methods gives you more options to expose your code to other developers
+
+#### Interface
+
+- Interfaces allow for variation in the behavior of classes that extend them. It's up to each class to provide the implementation
+
+```kt
+interface ProgressPrintable {
+  val progressText: String
+  fun printProgressBar()
+}
+
+class Quiz : ProgressPrintable {
+  override val progressText: String
+    get() = "${answered} of ${total} answered"
+  
+  override fun printProgressBar() {
+    repeat(Quiz.answered) { print("▓") }
+    repeat(Quiz.total - Quiz.answered) { print("▒") }
+    println()
+    println(progressText)
+  }
+}
+```
+
+#### Scope functions
+
+- **Scope functions** allow you to concisely access properties and methods from a class without having to repeatedly access the variable name
+
+- The `let()` function allows you to refer to an object in a lambda expression using the identifier it, instead of the object's actual name
+
+```kt
+fun printQuiz() {
+  question1.let {
+    println(it.questionText)
+    println(it.answer)
+    println(it.difficulty)
+  }
+  println()
+  question2.let {
+    println(it.questionText)
+    println(it.answer)
+    println(it.difficulty)
+  }
+}
+```
+
+- The `apply()` function is an extension function that can be called on an object using dot notation, no need the variable
+
+```kt
+Quiz().apply {
+  printQuiz()
+}
+```
