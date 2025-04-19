@@ -973,3 +973,70 @@ val solarSystem = rockPlanets + gasPlanets
 ```
 
 - If you want to make an array larger than it already is, you need to create a new array
+
+##### Lists
+
+- **List** is an interface that defines properties and methods related to a read-only ordered collection of items
+- **MutableList** extends the List interface by defining methods to modify a list, such as adding and removing elements
+
+- eg.
+
+```kt
+// =============================== List =====================================
+
+val solarSystem = listOf("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
+println(solarSystem.size) // 8
+println(solarSystem[2])  // "Earth"
+println(solarSystem.get(3)) // "Mars"
+println(solarSystem.indexOf("Earth"))  // 2
+println(solarSystem.indexOf("Pluto"))  //  -1
+
+// Iterate
+for (planet in solarSystem) {
+  println(planet)
+}
+
+// =============================== MutableList =====================================
+
+val solarSystem = mutableListOf("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
+solarSystem.add("Pluto") // adds to the end of the list
+solarSystem.add(3, "Theia") // adds to the certain position
+solarSystem[3] = "Future Moon"
+solarSystem.removeAt(9)
+solarSystem.remove("Future Moon") // only remove one
+println(solarSystem.contains("Pluto"))
+println("Future Moon" in solarSystem)
+```
+
+##### Sets
+
+- eg.
+
+```kt
+val solarSystem = mutableSetOf("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
+println(solarSystem.size)
+solarSystem.add("Pluto")
+println(solarSystem.contains("Pluto"))
+solarSystem.remove("Pluto")
+```
+
+##### Map
+
+- eg.
+
+```kt
+val solarSystem = mutableMapOf(
+  "Mercury" to 0,
+  "Venus" to 0,
+  "Earth" to 1,
+  "Mars" to 2,
+  "Jupiter" to 79,
+  "Saturn" to 82,
+  "Uranus" to 27,
+  "Neptune" to 14
+)
+println(solarSystem.size)
+solarSystem["Pluto"] = 5
+solarSystem.put("Jupiter", 1)
+solarSystem.remove("Pluto")
+```
