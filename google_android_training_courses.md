@@ -1040,3 +1040,119 @@ solarSystem["Pluto"] = 5
 solarSystem.put("Jupiter", 1)
 solarSystem.remove("Pluto")
 ```
+
+##### Higher-order functions
+
+- **Higher-order functions**: functions that take other functions as parameters and/or return a function
+  - eg. `repeat()`
+  - Higher-order functions can let collections usage more concise
+
+###### forEach()
+
+- The `forEach()` function executes the function passed as a parameter once for each item in the collection
+  - `forEach(action: (T) -> Unit)`
+
+- eg.
+
+```kt
+class Cookie(
+  val name: String,
+  val softBaked: Boolean,
+  val hasFilling: Boolean,
+  val price: Double
+)
+
+val cookies = listOf(
+  Cookie(
+    name = "Chocolate Chip",
+    softBaked = false,
+    hasFilling = false,
+    price = 1.69
+  ),
+  Cookie(
+    name = "Banana Walnut", 
+    softBaked = true, 
+    hasFilling = false, 
+    price = 1.49
+  )
+)
+
+fun main() {
+  cookies.forEach {
+    println("Menu item: ${it.name}")
+  }
+}
+```
+
+###### map()
+
+- The `map()` function lets you transform a collection into a new collection with the same number of elements
+
+```kt
+val fullMenu = cookies.map {
+  "${it.name} - $${it.price}"
+}
+println("Full menu:")
+fullMenu.forEach {
+  println(it)
+}
+```
+
+###### filter()
+
+- The `filter()` function lets you create a subset of a collection
+
+```kt
+val softBakedMenu = cookies.filter {
+  it.softBaked
+}
+println("Soft cookies:")
+softBakedMenu.forEach {
+  println("${it.name} - $${it.price}")
+}
+```
+
+###### groupBy()
+
+- The `groupBy()` function can be used to turn a list into a map, based on a function
+  - Each unique return value of the function becomes a key in the resulting map
+  - The values for each key are all the items in the collection that produced that unique return value
+
+```kt
+val groupedMenu = cookies.groupBy { it.softBaked }
+val softBakedMenu = groupedMenu[true] ?: listOf()
+val crunchyMenu = groupedMenu[false] ?: listOf()
+
+println("Soft cookies:")
+softBakedMenu.forEach {
+  println("${it.name} - $${it.price}")
+}
+
+println("Crunchy cookies:")
+crunchyMenu.forEach {
+  println("${it.name} - $${it.price}")
+}
+```
+
+###### fold()
+
+- The `fold()` function is used to generate a single value from a collection
+  - Sometimes called `reduce()`
+
+```kt
+val totalPrice = cookies.fold(0.0) {total, cookie ->
+  total + cookie.price
+}
+
+println("Total price: $${totalPrice}")
+```
+
+###### sortedBy()
+
+- `sortedBy()` lets you specify a lambda that returns the property you'd like to sort by
+
+```kt
+val alphabeticalMenu = cookies.sortedBy {
+  it.name
+}
+```
