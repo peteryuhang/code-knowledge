@@ -958,3 +958,18 @@ Quiz().apply {
   printQuiz()
 }
 ```
+
+#### Collections
+
+##### Arrays
+
+- eg.
+
+```kt
+val rockPlanets = arrayOf<String>("Mercury", "Venus", "Earth", "Mars")
+val gasPlanets = arrayOf("Jupiter", "Saturn", "Uranus", "Neptune")
+
+val solarSystem = rockPlanets + gasPlanets
+```
+
+- If you want to make an array larger than it already is, you need to create a new array
