@@ -1156,3 +1156,74 @@ val alphabeticalMenu = cookies.sortedBy {
   it.name
 }
 ```
+
+### Build a scrollable list
+
+- Sample code:
+
+```kt
+@Composable
+fun AffirmationsApp() {
+  val layoutDirection = LocalLayoutDirection.current
+  // This composable will set the padding for the AffirmationsList composable
+  Surface(
+    modifier = Modifier
+      .fillMaxWidth()
+      .statusBarsPadding()
+      .padding(
+        // translate a LayoutDirection object into padding
+        start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
+        end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection)
+      )
+  ) {
+    AffirmationList(
+      affirmationList = Datasource().loadAffirmations()
+    )
+  }
+}
+
+@Composable
+fun AffirmationCard(
+  affirmation: Affirmation,
+  // It is a best practice to pass a modifier to every composable and set it to a default value
+  modifier: Modifier = Modifier
+) {
+  Card(modifier = modifier) {
+    Column {
+      Image(
+        painter = painterResource(affirmation.imageResourceId),
+        contentDescription = stringResource(affirmation.stringResourceId),
+        modifier = Modifier.fillMaxWidth().height(194.dp),
+        // A contentScale determines how the image should be scaled and displayed
+        contentScale = ContentScale.Crop
+      )
+      Text(
+        text = LocalContext.current.getString(affirmation.stringResourceId),
+        modifier = Modifier.padding(16.dp),
+        style = MaterialTheme.typography.headlineSmall
+      )
+    }
+  }
+}
+
+@Composable
+fun AffirmationList(
+  affirmationList: List<Affirmation>,
+  modifier: Modifier = Modifier
+) {
+  // A Column can only hold a predefined, or fixed, number of composables
+  // A LazyColumn can add content on demand, which makes it good for long lists and particularly when the length of the list is unknown
+  // A LazyColumn also provides scrolling by default, without additional code
+  LazyColumn(modifier = modifier) {
+    // The items() method is how you add items to the LazyColumn
+    items(affirmationList) { affirmation ->
+      AffirmationCard(
+        affirmation = affirmation,
+        modifier = Modifier.padding(8.dp)
+      )
+    }
+  }
+}
+```
+
+
