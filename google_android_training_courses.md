@@ -1267,4 +1267,73 @@ Image(
 
 #### Typography
 
+- [Material Design Type Scale](https://m3.material.io/styles/typography/type-scale-tokens) includes fifteen font styles that are supported by the type system
 
+- Reusable categories of text:
+  - **Display**
+    - As the largest text on the screen, display styles are reserved for short, important text or numerals. They work best on large screens
+  - **Headline**
+    - Headlines are best-suited for short, high-emphasis text on smaller screens. These styles can be good for marking primary passages of text or important regions of content
+  - **Title**
+    - Titles are smaller than headline styles, and should be used for medium-emphasis text that remains relatively short
+  - **Body**
+    - Body styles are used for longer passages of text in your app
+  - **Label**
+    - Label styles are smaller, utilitarian styles, used for things like the text inside components or for very small text in the content body, such as captions
+
+- **Fonts**:
+  - The Android platform provides a variety of fonts, but you may want to customize your app with a font not provided by default
+  - Custom fonts can add personality and be used for branding
+  - Custom fonts can be searched on [here](https://fonts.google.com/)
+
+#### Top bar
+
+- A **Scaffold** is a layout that provides slots for various components and screen elements, such as an Image, Row, or Column
+  - A Scaffold also provides a slot for a TopAppBar
+
+- There are four different types of **TopAppBar**: center, small, medium and large
+
+- eg.
+```kt
+@Composable
+fun WoofTopAppBar(modifier: Modifier = Modifier) {
+  CenterAlignedTopAppBar(
+    title = {
+      Row(
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Image(
+          modifier = Modifier
+              .size(dimensionResource(id = R.dimen.image_size))
+              .padding(dimensionResource(id = R.dimen.padding_small)),
+          painter = painterResource(R.drawable.ic_woof_logo),
+          contentDescription = null
+        )
+        Text(
+          text = stringResource(R.string.app_name),
+          style = MaterialTheme.typography.displayLarge
+        )
+      }
+    },
+    modifier = modifier
+  )
+}
+
+@Composable
+fun WoofApp() {
+  Scaffold(
+    topBar = {
+      WoofTopAppBar()
+    }
+  ) { it ->
+    LazyColumn(contentPadding = it) {
+      items(dogs) {
+        DogItem(
+          dog = it,
+          modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+        )
+      }
+    }
+  }
+}
+```
