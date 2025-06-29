@@ -1226,4 +1226,45 @@ fun AffirmationList(
 }
 ```
 
+### Build beautiful apps
+
+#### Color
+
+- Color represented in Android system:
+
+![](/assets/google-android-training-courses/color_represent_system.png)
+
+- [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/) to create a custom color scheme
+  - The **primary** colors are used for key components across the UI
+  - The **secondary** colors are used for less prominent components in the UI
+  - The **tertiary** colors are used for contrasting accents that can be used to balance primary and secondary colors or bring heightened attention to an element, such as an input field
+  - The **on** color elements appear **on top** of other colors in the palette, and are primarily applied to text, iconography, and strokes. In our color palette, we have an **onSurface** color, which appears on top of the **surface** color, and an **onPrimary** color, which appears on top of the primary color
+
+- We don't need to explicitly assign a color to a component, it is automatically mapped to a color slot when you set the color theme in your app
+  - `MaterialTheme` components are automatically mapped to color slots
+  - Other key components across the UI like Floating Action Buttons also default to the Primary color
+
+#### Shape
+
+- `RoundedCornerShape` describe a rectangle with rounded corners, it defines how round the corners are
+- eg.
+
+```kt
+Image(
+  modifier = modifier
+      .size(dimensionResource(R.dimen.image_size))
+      .padding(dimensionResource(R.dimen.padding_small))
+      // Clip the image into a circle
+      .clip(MaterialTheme.shapes.small),
+  // Crops the image to fit
+  contentScale = ContentScale.Crop,
+  painter = painterResource(dogIcon),
+  contentDescription = null
+)
+```
+
+- A **Card** is a surface that can contain a single composable and contains **options for decoration**
+
+#### Typography
+
 
