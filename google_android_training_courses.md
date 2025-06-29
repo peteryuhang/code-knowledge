@@ -1337,3 +1337,110 @@ fun WoofApp() {
   }
 }
 ```
+
+#### Animation
+
+- **Icon** design often reduces the level of detail to the minimum required to be familiar to a user
+  - Material Design provides a [number of icons](https://fonts.google.com/icons), arranged in common categories, for most of your needs
+  - Add gradle dependency: `implementation("androidx.compose.material:material-icons-extended")`
+
+- **Animations** can add visual cues that notify users about what's going on in your app
+  - [Spring animation](https://developer.android.com/develop/ui/compose/animation/introduction#spring) is a physics-based animation driven by a spring force
+    - Damping ratio: The bounciness of the spring
+    - Stiffness level: How fast the spring moves toward the end
+  - The **animate*AsState()** functions are one of the simplest animation APIs in Compose for animating a single value
+    - You only provide the end value (or target value), and the API starts animation from the current value to the specified end value
+    - Beside built-in data type, can easily add support for other data types using `animateValueAsState()` that takes a generic type
+    - We can also consider change the color by using `animateColorAsState()`
+
+- eg.
+
+```kt
+@Composable
+private fun DogItemButton(
+  expanded: Boolean,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
+) {
+  IconButton(
+    onClick = onClick,
+    modifier = modifier
+  ) {
+    Icon(
+      imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+      contentDescription = stringResource(R.string.expand_button_content_description),
+      tint = MaterialTheme.colorScheme.secondary
+    )
+  }
+}
+
+@Composable
+fun DogHobby(
+  @StringRes dogHobby: Int,
+  modifier: Modifier = Modifier
+) {
+  Column(
+    modifier = modifier
+  ) {
+    Text(
+      text = stringResource(R.string.about),
+      style = MaterialTheme.typography.labelSmall
+    )
+    Text(
+      text = stringResource(dogHobby),
+      style = MaterialTheme.typography.bodyLarge
+    )
+  }
+}
+
+@Composable
+fun DogItem(
+  dog: Dog,
+  modifier: Modifier = Modifier
+) {
+  var expanded by remember { mutableStateOf(false) }
+  val color by animateColorAsState(
+    targetValue = if (expanded) MaterialTheme.colorScheme.tertiaryContainer
+    else MaterialTheme.colorScheme.primaryContainer,
+  )
+  Card(modifier = modifier) {
+    Column(
+      modifier = modifier
+        .animateContentSize (
+          animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+          )
+        )
+        .background(color = color)
+    ) {
+      Row(
+        modifier = modifier
+          .fillMaxWidth()
+          .padding(dimensionResource(R.dimen.padding_small))
+      ) {
+        DogIcon(dog.imageResourceId)
+        DogInformation(dog.name, dog.age)
+        // Modifier.weight() sets the UI element's width/height proportionally to the element's weight, relative to its weighted siblings
+        // The spacer is the only weighted child element in the row, it causes the spacer to fill the space remaining in the row
+        Spacer(modifier = Modifier.weight(1f))
+        DogItemButton(
+          expanded = expanded,
+          onClick = { expanded = !expanded }
+        )
+      }
+      if (expanded) {
+        DogHobby(
+          dog.hobbies,
+          modifier = Modifier.padding(
+            start = dimensionResource(R.dimen.padding_medium),
+            top = dimensionResource(R.dimen.padding_small),
+            end = dimensionResource(R.dimen.padding_medium),
+            bottom = dimensionResource(R.dimen.padding_small)
+          )
+        )
+      }
+    }
+  }
+}
+```
