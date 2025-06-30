@@ -1252,11 +1252,11 @@ fun AffirmationList(
 ```kt
 Image(
   modifier = modifier
-      .size(dimensionResource(R.dimen.image_size))
-      .padding(dimensionResource(R.dimen.padding_small))
-      // Clip the image into a circle
-      .clip(MaterialTheme.shapes.small),
-  // Crops the image to fit
+    .size(dimensionResource(R.dimen.image_size))
+    .padding(dimensionResource(R.dimen.padding_small))
+    // Clip the image into a circle
+    .clip(MaterialTheme.shapes.small),
+    // Crops the image to fit
   contentScale = ContentScale.Crop,
   painter = painterResource(dogIcon),
   contentDescription = null
@@ -1444,3 +1444,60 @@ fun DogItem(
   }
 }
 ```
+
+### Navigation and Architecture
+
+#### Stages of the Activity lifecycle
+
+- **Activity Lifecycle** on android app:
+
+![](/assets/google-android-training-courses/activity_lifecycle.png)
+
+- Android invokes these callbacks when the activity moves from one state to another
+  - Can override those methods in your own activities to perform tasks in response to those lifecycle state changes
+
+- Example steps
+  1. `onCreate()`:
+    - Do any one-time initializations for activity
+    - Called once
+    - After this, activity considered created
+    - Must immediately call `super.onCreate()`, same is true for other lifecycle callback methods
+  2. `onStart()`:
+    - Just after `onCreate`
+    - After run, activity is visible on the screen
+    - Can be called many times by the system
+    - Paired with a corresponding `onStop()`
+    - If the user starts your app and then returns to the device's home screen, the activity is stopped and is no longer visible on screen
+  3. `onResume()`:
+    - Brings the app to the foreground, and the user is now able to interact with it
+  4. `onPause()`:
+    - After called, the app no longer has focus, user can interact with the app
+    - Need to keep lightweight
+  5. `onStop()`:
+    - After called, the app no longer on screen
+  6. `onDestroy()`:
+    - Nullify, close, or destroy objects that the activity may have been using so that they don't continue to use resources, like memory
+    - Called once
+  7. `onRestart()`:
+    - Put code that you only want to call if your activity is not being started for the first time
+
+- Can use `import android.util.Log` and **Logcat** tool to debugging
+- Rotate screen:
+  - The activity is shut down (`onDestroy()` been called) and re-created, the activity re-starts with default values
+
+- **Lifecycle of a composable**:
+  - Composable functions have their own lifecycle that is independent of the Activity lifecycle
+    - Enters the Composition, recomposing 0 or more times, and then leaving the Composition
+  - When the state of your app changes, a **recomposition** is scheduled
+  - Recomposition is when Compose re-executes the composable functions whose state might have changed and creates an updated UI
+  - **The only way to create or update a Composition is by its initial composition and subsequent recompositions**
+  - To indicate to Compose that it should track an object's state, the object needs to be of type **State** or **MutableState**
+    - eg.
+    ```kt
+    // mutableStateOf for recomposition triggered
+    // remember for retain its updated value & reuse its value during recompositions
+    var revenue by remember { mutableStateOf(0) }
+    ```
+    - For Compose to retain the state during a configuration change, you must use rememberSaveable
+  - To save values during recompositions, you need to use **remember**
+  - Use **rememberSaveable** to save values during recompositions AND **configuration changes**
