@@ -1501,3 +1501,23 @@ fun DogItem(
     - For Compose to retain the state during a configuration change, you must use rememberSaveable
   - To save values during recompositions, you need to use **remember**
   - Use **rememberSaveable** to save values during recompositions AND **configuration changes**
+
+#### ViewModel and State in Compose
+
+- Architectural principles:
+  - **Separation of concerns**:
+    - App is divided into classes of functions, each with separate responsibilities
+  - **Driving UI from a model**:
+    - Should drive your UI from a model, preferably a persistent model
+    - Models are components responsible for handling the data for an app
+    - Models are independent from the UI elements and app components, so they're unaffected by the app lifecycle
+
+![](/assets/google-android-training-courses/view_model.png)
+
+- The **ViewModel** component holds and exposes the state the UI consumes
+- **UI state** is application data transformed by ViewModel
+- ViewModel objects are not destroyed
+  - The app automatically retains ViewModel objects during configuration changes so that the data they hold is immediately available after the recomposition
+
+- `UI = UI Elements + UI State`
+  - UI is what the user sees, UI state is what the app says they should see
