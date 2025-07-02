@@ -1518,6 +1518,19 @@ fun DogItem(
 - **UI state** is application data transformed by ViewModel
 - ViewModel objects are not destroyed
   - The app automatically retains ViewModel objects during configuration changes so that the data they hold is immediately available after the recomposition
+- **unidirectional data flow (UDF)** is a design pattern in which state flows down and events flow up
+  - Decouple composables that display state in the UI from the parts of storing and changing state
 
 - `UI = UI Elements + UI State`
   - UI is what the user sees, UI state is what the app says they should see
+
+- **StateFlow**: Data holder observable flow that emits the current and new state updates
+  - Works well with classes that must maintain an observable immutable state
+  - `value` property reflects the current state value
+  - `MutableStateFlow` helps update the state and send to the flow
+
+- Anatomy of **alert dialog**:
+
+![](/assets/google-android-training-courses/alert_dialog_anatomy.png)
+
+- For detail code and example, can check `Unscramble` app
