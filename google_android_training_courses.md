@@ -1547,3 +1547,36 @@ fun DogItem(
   - BOM with the compose testing libraries(instrumented tests) eg. `androidTestImplementation(platform("androidx.compose:compose-bom:2023.06.01"))`
   - Compose BOM is only for Compose libraries
 
+##### Test strategy
+
+- At a very basic level, you can categorize the tests in three scenarios
+  1. Success path
+    - Also known as happy path
+    - Easy to create an exhaustive list of scenarios
+  2. Error path
+    - Check how the app responds to error conditions or invalid user input
+    - Quite challenging to determine all the possible error
+  3. Boundary case
+    - Focuses on testing boundary conditions in the app
+
+- Good unit test properties:
+  1. Focused
+    - Focus on testing a unit, such as a piece of code (eg. class or function)
+    - Narrow and focus on validating the correctness of individual pieces of code, rather than multiple pieces of code at the same time
+  2. Understandable
+    - At a glance, a developer should be able to immediately understand the intention behind the test
+  3. Deterministic
+    - Should consistently pass or fail w/o changing the code
+    - Run any number of times, should yield the same result
+  4. Self-contained
+    - Does not require any human interaction or setup and runs in isolation
+
+- Test function naming strategy: `thingUnderTest_TriggerOfTest_ResultOfTest`
+  - eg. `gameViewModel_CorrectWordGuessed_ScoreUpdatedAndErrorFlagUnset`
+
+- Test methods are executed in isolation to avoid unexpected side effects from mutable test instance state
+  - By default, before each test method is executed, JUnit creates a new instance of the test class
+  - Each instance has its own copy of the all the corresponding test class property
+
+- In Android studio, we can run test with coverage to help checking
+  - Use the code coverage as a tool to find the parts of code that were not executed by your tests, rather than a tool to measure your code's quality
