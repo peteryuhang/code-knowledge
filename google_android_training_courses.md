@@ -1534,3 +1534,16 @@ fun DogItem(
 ![](/assets/google-android-training-courses/alert_dialog_anatomy.png)
 
 - For detail code and example, can check `Unscramble` app
+
+
+#### Unit tests for ViewModel
+
+- Use the `testImplementation` configuration in gradle to add test only dependencies
+  - eg. `testImplementation("junit:junit:4.13.2")` for junit test module
+
+- Compose **BOM** is the recommended way to manage Compose library versions
+  - BOM lets you manage all of your Compose library versions by specifying only the BOM's version
+  - eg. `implementation platform("androidx.compose:compose-bom:2023.06.01")`
+  - BOM with the compose testing libraries(instrumented tests) eg. `androidTestImplementation(platform("androidx.compose:compose-bom:2023.06.01"))`
+  - Compose BOM is only for Compose libraries
+
