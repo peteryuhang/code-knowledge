@@ -1580,3 +1580,15 @@ fun DogItem(
 
 - In Android studio, we can run test with coverage to help checking
   - Use the code coverage as a tool to find the parts of code that were not executed by your tests, rather than a tool to measure your code's quality
+
+#### Navigation in Compose
+
+- Navigation component has three main parts:
+  1. **NavController**: Responsible for navigating between destinations—that is, the screens in your app
+  2. **NavGraph**: Maps composable destinations to navigate to
+  3. **NavHost**: Composable acting as a container for displaying the current destination of the NavGraph
+
+- Because the routes is finite number, we can define app's route using an **enum class**
+
+- A benefit of using a NavHost to handle your app's navigation is that navigation logic is kept separate from individual UI
+  - This option avoids some of the major drawbacks of passing the navController as a parameter
