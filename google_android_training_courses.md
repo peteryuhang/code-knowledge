@@ -1620,3 +1620,161 @@ class CupcakeScreenNavigationTest {
   }
 }
 ```
+
+### Kotlin Coroutines
+
+#### Synchronous Code
+
+- examples:
+
+```kt
+import kotlinx.coroutines.*
+
+fun main() {
+  // runBlocking() is synchronous; it will not return until all work within its lambda block is completed
+  runBlocking {
+    println("Weather forecast")
+    // Suspend function 'delay' should be called only from a coroutine or another suspend function
+    delay(1000)
+    println("Sunny")
+  }
+}
+```
+
+- A suspend function can only be called from a coroutine or another suspend function:
+  - A suspending function is like a regular function, but it can be suspended and resumed again later
+  - A **suspension point** is the place within the function where execution of the function can suspend
+    - Once execution resumes, it picks up where it last left off in the code and proceeds with the rest of the function
+
+```kt
+fun main() {
+  val time = measureTimeMillis {
+    runBlocking {
+      println("Weather forecast")
+      printForecast()
+      printTemperature()
+    }
+  }
+}
+
+// Add the suspend modifier before the fun keyword to make it a suspending function
+suspend fun printForecast() {
+  delay(1000) // suspending function
+  println("Sunny")
+}
+
+suspend fun printTemperature() {
+  delay(1000)
+  println("30\u00b0C")
+}
+```
+
+#### Asynchronous Code
+
+- Coroutines in Kotlin follow a key concept called **structured concurrency**
+  - Code is sequential by default and cooperates with an underlying event loop, unless you explicitly ask for concurrent execution (e.g. using `launch()`)
+
+- eg. The output is the same but will be faster than before
+
+```kt
+import kotlinx.coroutines.*
+
+fun main() {
+  runBlocking {
+    println("Weather forecast")
+    launch {
+      printForecast()
+    }
+    launch {
+      printTemperature()
+    }
+  }
+}
+
+suspend fun printForecast() {
+  delay(1000)
+  println("Sunny")
+}
+
+suspend fun printTemperature() {
+  delay(1000)
+  println("30\u00b0C")
+} 
+```
+
+- The 2 functions run concurrently because they are in separate coroutines:
+
+![](/assets/google-android-training-courses/weather_example_corotine.png)
+
+- `launch()`'s nature is "fire and forget"  
+
+- Use the `async()` function from the coroutines library if you care about when the coroutine finishes and need a return value from it
+  - The `async()` function returns an object of type **Deferred**
+  - A promise that the result will be in there when it's ready
+  - You can access the result on the Deferred object using `await()`
+
+```kt
+import kotlinx.coroutines.*
+
+fun main() {
+  runBlocking {
+    println("Weather forecast")
+    val forecast: Deferred<String> = async {
+      getForecast()
+    }
+    val temperature: Deferred<String> = async {
+      getTemperature()
+    }
+    println("${forecast.await()} ${temperature.await()}")
+    println("Have a good day!")
+  }
+}
+
+suspend fun getForecast(): String {
+  delay(1000)
+  return "Sunny"
+}
+
+suspend fun getTemperature(): String {
+  delay(1000)
+  return "30\u00b0C"
+}
+```
+
+- **Parallel Decomposition**: 
+  1. Taking a problem and breaking it into smaller subtasks that can be solved in parallel
+  2. When the results of the subtasks are ready, you can combine them into a final result
+
+```kt
+import kotlinx.coroutines.*
+
+fun main() {
+  runBlocking {
+    println("Weather forecast")
+    println(getWeatherReport())
+    println("Have a good day!")
+  }
+}
+
+// coroutineScope{} creates a local scope
+// The coroutines launched within this scope are grouped together within this scope
+suspend fun getWeatherReport() = coroutineScope {
+  val forecast = async { getForecast() }
+  val temperature = async { getTemperature() }
+  "${forecast.await()} ${temperature.await()}"
+}
+
+suspend fun getForecast(): String {
+  delay(1000)
+  return "Sunny"
+}
+
+suspend fun getTemperature(): String {
+  delay(1000)
+  return "30\u00b0C"
+}
+```
+
+- With `coroutineScope()`, even though the function is internally doing work concurrently, it appears to the caller as a synchronous operation because coroutineScope won't return until all work is done
+  - The key insight here for **structured concurrency** is that you can take multiple concurrent operations and put it into a single synchronous operation, where concurrency is an **implementation detail**
+  - The only requirement on the calling code is to be in a suspend function or coroutine
