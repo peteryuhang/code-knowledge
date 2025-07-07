@@ -1592,3 +1592,31 @@ fun DogItem(
 
 - A benefit of using a NavHost to handle your app's navigation is that navigation logic is kept separate from individual UI
   - This option avoids some of the major drawbacks of passing the navController as a parameter
+
+#### UI Testing
+
+- UI tests are contained in their own source sets called androidTest
+  - `androidTestImplementation` keyword to declare the dependency in the app module's `build.gradle.kts` file
+
+- eg. testing for navigation
+
+```kt
+class CupcakeScreenNavigationTest {
+  @get:Rule
+  val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+
+  // the lateinit keyword is used to declare a property that can be initialized after the object has been declared
+  private lateinit var navController: TestNavHostController
+
+  // When a method is annotated with @Before, it runs before every method annotated with @Test
+  @Before
+  fun setupCupcakeNavHost() {
+    composeTestRule.setContent {
+      navController = TestNavHostController(LocalContext.current).apply {
+        navigatorProvider.addNavigator(ComposeNavigator())
+      }
+      CupcakeApp(navController = navController)
+    }
+  }
+}
+```
