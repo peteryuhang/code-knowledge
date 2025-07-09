@@ -1713,6 +1713,8 @@ suspend fun printTemperature() {
   - A promise that the result will be in there when it's ready
   - You can access the result on the Deferred object using `await()`
 
+- Can think `async()` as producer and the `await()` as consumer
+
 ```kt
 import kotlinx.coroutines.*
 
@@ -1778,3 +1780,56 @@ suspend fun getTemperature(): String {
 - With `coroutineScope()`, even though the function is internally doing work concurrently, it appears to the caller as a synchronous operation because coroutineScope won't return until all work is done
   - The key insight here for **structured concurrency** is that you can take multiple concurrent operations and put it into a single synchronous operation, where concurrency is an **implementation detail**
   - The only requirement on the calling code is to be in a suspend function or coroutine
+
+#### Exceptions and cancellation
+
+- There is a parent-child relationship among coroutines
+  - You can launch a coroutine (known as the child) from another coroutine (parent)
+  - As you launch more coroutines from those coroutines, you can build up a whole hierarchy of coroutines
+
+- When one of the child coroutines fails with an exception, it gets propagated upwards
+
+eg.
+
+```kt
+fun main() {
+  runBlocking {
+    println("Weather forecast")
+    println(getWeatherReport())
+    println("Have a good day!")
+  }
+}
+
+suspend fun getWeatherReport() = coroutineScope {
+  val forecast = async { getForecast() }
+  val temperature = async {
+    try {
+      getTemperature()
+    } catch (e: AssertionError) {
+      println("Caught exception $e")
+      "{ No temperature found }"
+    }
+  }
+
+  "${forecast.await()} ${temperature.await()}"
+}
+
+suspend fun getForecast(): String {
+  delay(1000)
+  return "Sunny"
+}
+
+suspend fun getTemperature(): String {
+  delay(500)
+  throw AssertionError("Temperature is invalid")
+  return "30\u00b0C"
+}
+
+// Running result:
+//    Weather forecast
+//    Caught exception java.lang.AssertionError: Temperature is invalid
+//    Sunny { No temperature found }
+//    Have a good day!
+```
+
+
