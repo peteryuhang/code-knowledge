@@ -1832,4 +1832,21 @@ suspend fun getTemperature(): String {
 //    Have a good day!
 ```
 
+- **Cancellation**
+  - Mostly **user-driven** when an event has caused the app to cancel work that it started
 
+- eg. 
+
+```kt
+suspend fun getWeatherReport() = coroutineScope {
+  val forecast = async { getForecast() }
+  val temperature = async { getTemperature() }
+
+  delay(200)
+  temperature.cancel()
+
+  "${forecast.await()}"
+}
+```
+
+- A coroutine can be cancelled, but it won't affect other coroutines in the same scope and the parent coroutine will not be cancelled
