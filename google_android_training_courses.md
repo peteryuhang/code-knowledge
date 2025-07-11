@@ -1944,3 +1944,45 @@ fun main() {
 //    10 results found.
 //    main @coroutine#2 - end of launch function
 ```
+
+### Coroutines in Android Studio
+
+- eg. 
+
+```kt
+suspend fun run() {
+  while (currentProgress < maxProgress) {
+    delay(progressDelayMillis)
+    currentProgress += progressIncrement
+  }
+}
+```
+
+![](/assets/google-android-training-courses/example_suspend_fun_in_android_studio.png)
+
+- The coroutine suspends (**but doesn't block**) the execution after calling the `delay()` function with the desired interval value
+
+- To call suspend functions safely from inside a composable, you need to use the `LaunchedEffect()` composable
+  - `LaunchedEffect()` will take care the **Dispatcher** thing also
+
+- The unit of this **hierarchy** is referred to as a coroutine scope
+  - Coroutine scopes should always be associated with a lifecycle
+  - You cannot call a suspend function from a function which is not marked suspend
+  - suspend functions only been called by coroutine builders, such as launch. These builders are, in turn, tied to a **CoroutineScop**
+
+- eg.
+
+```kt
+LaunchedEffect(playerOne, playerTwo) {
+  // The scope inherits its coroutineContext from the LaunchedEffect() scope
+  // The scope returns as soon as the given block and all its children coroutines are complete
+  coroutineScope {
+    launch { playerOne.run() }
+    launch { playerTwo.run() }
+  }
+  raceInProgress = false
+}
+```
+
+![](/assets/google-android-training-courses/example_coroutineScope.png)
+
