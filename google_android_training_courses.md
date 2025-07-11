@@ -1850,3 +1850,97 @@ suspend fun getWeatherReport() = coroutineScope {
 ```
 
 - A coroutine can be cancelled, but it won't affect other coroutines in the same scope and the parent coroutine will not be cancelled
+
+#### Coroutine concepts
+
+##### Job
+
+- When you launch a coroutine with the `launch()` function, it returns an instance of **Job**
+  - The Job holds a handle, or reference, to the coroutine, so you can manage its lifecycle
+
+```kt
+val job = launch { ... }
+```
+
+- The **Deferred object** that is returned from a coroutine started with the `async()` function is a Job as well, and it holds the future result of the coroutine
+
+- With a job, you can check if it's **active**, **cancelled**, or **completed**:
+  - Completed: Coroutine and any coroutines that it launched have completed all of their work
+
+- When a coroutine launches another coroutine, the job that returns from the new coroutine is called the child of the original parent job
+  - If a parent job gets cancelled, then its child jobs also get cancelled
+  - When a child job is canceled using `job.cancel()`, it terminates, but it does not cancel its parent
+  - If a job fails with an exception, it cancels its parent with that exception (known as propagating the error upwards)
+
+![](/assets/google-android-training-courses/parent_child_relationship.png)
+
+##### CoroutineScope
+
+- `launch()` and `async()` are extension functions on `CoroutineScope`
+  - `CoroutineScope` is declared as an interface and it contains a `CoroutineContext` as a variable
+  - The `launch()` and `async()` functions create a new child coroutine within that scope and the child also inherits the context from the scope
+
+- A `CoroutineScope` is tied to a lifecycle, which sets bounds on how long the coroutines within that scope will live (see example above)
+
+- The `CoroutineContext` provides information about the context in which the coroutine will be running in
+  - The `CoroutineContext` is essentially a map that stores elements where each element has a unique key, eg.
+    - name: name of the coroutine to uniquely identify it (default be "coroutine")
+    - job: controls the lifecycle of the coroutine (default no parent job)
+    - dispatcher: dispatches the work to the appropriate thread (default be `Dispatchers.Default`)
+    - exception handler: handles exceptions thrown by the code executed in the coroutine (default be no exception handler)
+
+  - Each of the elements in a context can be appended together with the `+` operator. For example, one `CoroutineContext` could be defined as follows:
+    - `Job() + Dispatchers.Main + exceptionHandler`
+
+  - Can override any elements that were inherited from the parent context by passing in arguments to the `launch()` or `async()` functions for the parts of the context that you want to be different, eg.
+
+  ```kt
+  scope.launch(Dispatchers.Default) {
+    ...
+  }
+  ```
+
+- Thread:
+  - A regular function **blocks** the calling thread until its work is completed
+  - Asynchronous function to perform **non-blocking** work because it returns before its work is completed
+  - We need to move any long-running work items off the **main thread** and handle it in a different thread
+
+- Coroutines use **dispatchers** to determine the thread to use for its execution, some built-in dispatchers:
+  - **Dispatchers.Main**:
+    - Use this dispatcher to run a coroutine on the main Android thread
+    - Primarily for handling UI updates and interactions, and performing quick work
+  - **Dispatchers.IO**:
+    - This dispatcher is optimized to perform disk or network I/O outside of the main thread
+  - **Dispatchers.Default**:
+    - Default dispatcher used when calling `launch()` and `async()`
+    - Use this dispatcher to perform computationally-intensive work outside of the main thread
+
+eg. you can switch the dispatcher by modifying the context that is used for the coroutine
+
+```kt
+import kotlinx.coroutines.*
+
+fun main() {
+  runBlocking {
+    println("${Thread.currentThread().name} - runBlocking function")
+    launch {
+      println("${Thread.currentThread().name} - launch function")
+      withContext(Dispatchers.Default) {
+        println("${Thread.currentThread().name} - withContext function")
+        delay(1000)
+        println("10 results found.")
+      }
+      println("${Thread.currentThread().name} - end of launch function")
+    }
+    println("Loading...")
+  }
+}
+
+// Print Result:
+//    main @coroutine#1 - runBlocking function
+//    Loading...
+//    main @coroutine#2 - launch function
+//    DefaultDispatcher-worker-1 @coroutine#2 - withContext function
+//    10 results found.
+//    main @coroutine#2 - end of launch function
+```
