@@ -1986,3 +1986,24 @@ LaunchedEffect(playerOne, playerTwo) {
 
 ![](/assets/google-android-training-courses/example_coroutineScope.png)
 
+- When write unit testing for coroutines, `runTest` coroutine builder need to be used
+  - eg. `testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")`
+
+```kt
+@Test
+fun raceParticipant_RaceStarted_ProgressUpdated() = runTest {
+  val expectedProgress = 1
+  // You can directly call the raceParticipant.run() in the runtTest builder,
+  // but the default test implementation ignores the call to delay()
+  launch { raceParticipant.run() }
+
+  // The advanceTimeBy() function helps to reduce the test execution time
+  advanceTimeBy(raceParticipant.progressDelayMillis)
+
+  // Since advanceTimeBy() doesn't run the task scheduled at the given duration,
+  // need to call the runCurrent() to executes any pending tasks at the current time
+  runCurrent()
+
+  assertEquals(expectedProgress, raceParticipant.currentProgress)
+}
+```
