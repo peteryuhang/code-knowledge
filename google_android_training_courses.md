@@ -2007,3 +2007,57 @@ fun raceParticipant_RaceStarted_ProgressUpdated() = runTest {
   assertEquals(expectedProgress, raceParticipant.currentProgress)
 }
 ```
+
+### Get Data from the internet
+
+- **ViewModel** with **Retrofit**:
+
+![](/assets/google-android-training-courses/web_service_with_retrofit.png)
+
+- [Doc of Retrofit](https://square.github.io/retrofit/)
+
+![](/assets/google-android-training-courses/retrofit_responsibility.png)
+
+- A **viewModelScope** is the built-in coroutine scope defined for each ViewModel in your app
+  - Any coroutine launched in this scope is automatically canceled if the ViewModel is cleared
+
+- `kotlinx.serialization` provides sets of libraries that convert a JSON string into Kotlin object
+  - There is a community developed third party library that works with Retrofit, [Kotlin Serialization Converter](https://github.com/JakeWharton/retrofit2-kotlinx-serialization-converter#kotlin-serialization-converter)
+
+- Retrofit service example:
+
+```kt
+private const val BASE_URL =
+    "https://android-kotlin-fun-mars-server.appspot.com"
+
+private val retrofit = Retrofit.Builder()
+  .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+  .baseUrl(BASE_URL)
+  .build()
+
+interface MarsApiService {
+  // Retrofit appends the endpoint photos to the base URL
+  @GET("photos")
+  suspend fun getPhotos(): List<MarsPhoto>
+}
+
+object MarsApi {
+  // lazily initialized retrofit object property
+  // it is initialized at its first usage
+  val retrofitService : MarsApiService by lazy {
+    retrofit.create(MarsApiService::class.java)
+  }
+}
+```
+
+- Serialization example:
+
+```kt
+@Serializable
+data class MarsPhoto(
+  val id: String,
+
+  @SerialName(value = "img_src")
+  val imgSrc: String
+)
+```
