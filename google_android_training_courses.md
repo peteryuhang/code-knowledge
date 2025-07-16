@@ -2120,3 +2120,60 @@ companion object {
   }
 }
 ```
+
+##### Testing Example
+
+- By passing fake classes for dependencies, you can control exactly what the dependency returns, eg.
+
+```kt
+class NetworkMarsRepositoryTest {
+  // The coroutine test library provides the runTest() function
+  // The function takes the method that you passed in the lambda and runs it from TestScope, which inherits from CoroutineScope
+  @Test
+  fun networkMarsPhotosRepository_getMarsPhotos_verifyPhotoList() = runTest{ 
+    val repository = NetworkMarsPhotosRepository(
+      marsApiService = FakeMarsApiService()
+    )
+    assertEquals(FakeDataSource.photosList, repository.getMarsPhotos())
+  }
+}
+```
+
+- This approach ensures that the code you are testing doesn't depend on untested code or APIs that could change or have unforeseen problems
+
+- eg. for main dispatcher unavailable in testing environment
+
+```kt
+class MarsViewModelTest {
+  // Main dispatcher is only available in a UI context
+  // If code under a local unit test references the Main dispatcher, an exception (like the one above) is thrown when the unit tests are run
+  @get:Rule
+  val testDispatcher = TestDispatcherRule()
+
+  @Test
+  fun marsViewModel_getMarsPhotos_verifyMarsUiStateSuccess() = runTest {
+    val marsViewModel = MarsViewModel(
+      marsPhotosRepository = FakeNetworkMarsPhotosRepository()
+    )
+    assertEquals(
+      MarsUiState.Success(
+        "Success: ${FakeDataSource.photosList.size} Mars " + "photos retrieved"
+      ),
+      marsViewModel.marsUiState
+    )
+  }
+}
+
+class TestDispatcherRule(
+  // The UnconfinedTestDispatcher specifies that tasks must not be executed in any particular order
+  val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
+): TestWatcher() { // The TestWatcher class enables you to take actions on different execution phases of a test
+  override fun starting(description: Description?) {
+    Dispatchers.setMain(testDispatcher)
+  }
+
+  override fun finished(description: Description?) {
+    Dispatchers.resetMain()
+  }
+}
+```
