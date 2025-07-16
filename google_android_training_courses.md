@@ -2024,6 +2024,8 @@ fun raceParticipant_RaceStarted_ProgressUpdated() = runTest {
 - `kotlinx.serialization` provides sets of libraries that convert a JSON string into Kotlin object
   - There is a community developed third party library that works with Retrofit, [Kotlin Serialization Converter](https://github.com/JakeWharton/retrofit2-kotlinx-serialization-converter#kotlin-serialization-converter)
 
+- To enable your app to make connections to the internet, add the `android.permission.INTERNET` permission in the Android manifest
+
 - Retrofit service example:
 
 ```kt
@@ -2060,4 +2062,61 @@ data class MarsPhoto(
   @SerialName(value = "img_src")
   val imgSrc: String
 )
+```
+
+### Repository and DI
+
+#### Repository
+
+- **Android recommended architecture** states that an app should have at least a **UI layer** and a **data layer**
+
+![](/assets/google-android-training-courses/ui_layer_and_data_layer.png)
+
+- The data layer is made up of one or more **repositories**. Repositories themselves contain zero or more **data sources**
+  - Best practices require the app to have a repository for each type of data source your app uses
+
+- General concept of **repository**:
+  - Exposes data to the rest of the app
+  - Centralizes changes to data
+  - Resolves conflicts between multiple data sources
+  - Abstracts sources of data from the rest of the app
+  - Contains business logic
+
+- Repository classes are named after the data they're responsible for
+  - The repository naming convention is type of `data + Repository`
+
+- eg.
+
+![](/assets/google-android-training-courses/repo_with_view_model.png)
+
+#### DI (Dependency Injection)
+
+- When a class requires another class, the required class is called a **dependency**
+
+- To make the code more flexible and adaptable, a class **must not** instantiate the objects it depends on
+  - The objects it depends on must be instantiated **outside the class and then passed in**
+
+- Passing in the required objects is called **dependency injection (DI)**. It is also known as [inversion of control](https://en.wikipedia.org/wiki/Inversion_of_control)
+  - DI is when a dependency is provided at runtime instead of being hardcoded into the calling class
+
+- DI
+  - Helps with the reusability of code
+  - Makes refactoring easier
+  - Helps with testing (eg. testing the network calling code)
+
+- A [container](https://developer.android.com/training/dependency-injection/manual#dependencies-container) is an object that contains the dependencies that the app requires
+  - These dependencies are used across the whole application, so they need to be in a common place that all activities can use
+
+- Android framework does not allow a **ViewModel** to be passed values in the constructor when created, we implement a `ViewModelProvider.Factory` object, which lets us get around this limitation
+
+```kt
+companion object {
+  val Factory: ViewModelProvider.Factory = viewModelFactory {
+    initializer {
+      val application = (this[APPLICATION_KEY] as MarsPhotosApplication)
+      val marsPhotosRepository = application.container.marsPhotosRepository
+      MarsViewModel(marsPhotosRepository = marsPhotosRepository)
+    }
+  }
+}
 ```
