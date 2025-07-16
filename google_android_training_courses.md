@@ -2177,3 +2177,31 @@ class TestDispatcherRule(
   }
 }
 ```
+
+### Display images from the internet
+
+- The image has to be **downloaded**, **internally stored(cached)**, and **decoded** from its compressed format to an image that Android can use
+  - Can rely on [Coil](https://coil-kt.github.io/coil/)
+
+- **Coil** basically needs two things:
+  1. The **URL** of the image you want to load and display
+  2. An **AsyncImage** composable to actually display that image
+
+- eg.
+
+```kt
+@Composable
+fun MarsPhotoCard(photos: MarsPhoto, modifier: Modifier = Modifier) {
+  AsyncImage(
+    model = ImageRequest.Builder(context = LocalContext.current)
+      .data(photos.imgSrc)
+      .crossfade(true)
+      .build(),
+    contentDescription = stringResource(R.string.mars_photo),
+    contentScale = ContentScale.Crop,
+    error = painterResource(R.drawable.ic_broken_image),
+    placeholder = painterResource(R.drawable.loading_img),
+    modifier = Modifier.fillMaxWidth()
+  )
+}
+```
