@@ -2281,3 +2281,38 @@ data class Item(
 )
 ```
 
+#### Item DAO
+
+- The **Data Access Object (DAO)** is a pattern you can use to separate the **persistence layer** from the rest of the **application** by providing an abstract interface
+
+- The Room library provides convenience annotations, such as `@Insert`, `@Delete`, and `@Update`, for defining methods that perform simple inserts, deletes, and updates without requiring you to write a SQL statement
+  - If you need to define more complex operations for insert, delete, update, or if you need to query the data in the database, use a `@Query` annotation instead
+
+- eg.
+
+```kt
+@Dao
+interface ItemDao {
+  // The database operations can take a long time to execute, so they need to run on a separate thread
+  // The argument onConflict tells the Room what to do in case of a conflict
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insert(item: Item)
+
+  @Update
+  suspend fun update(item: Item)
+
+  @Delete
+  suspend fun delete(item: Item)
+
+  // :id uses the colon notation in the query to reference arguments in the function
+  // With Flow as the return type, you receive notification whenever the data in the database changes
+  // The Room keeps this Flow updated for you, which means you only need to explicitly get the data once
+  // Because of the Flow return type, Room also runs the query on the background thread
+  // You don't need to explicitly make it a suspend function and call it inside a coroutine scope.
+  @Query("SELECT * FROM items WHERE id = :id")
+  fun getItem(id: Int): Flow<Item>
+
+  @Query("SELECT * FROM items ORDER BY name ASC")
+  fun getAllItems(): Flow<Item>
+}
+```
