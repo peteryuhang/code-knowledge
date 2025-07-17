@@ -2192,16 +2192,92 @@ class TestDispatcherRule(
 ```kt
 @Composable
 fun MarsPhotoCard(photos: MarsPhoto, modifier: Modifier = Modifier) {
-  AsyncImage(
-    model = ImageRequest.Builder(context = LocalContext.current)
-      .data(photos.imgSrc)
-      .crossfade(true)
-      .build(),
-    contentDescription = stringResource(R.string.mars_photo),
-    contentScale = ContentScale.Crop,
-    error = painterResource(R.drawable.ic_broken_image),
-    placeholder = painterResource(R.drawable.loading_img),
-    modifier = Modifier.fillMaxWidth()
-  )
+  Card(
+    modifier = modifier,
+    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+  ) {
+    AsyncImage(
+      model = ImageRequest.Builder(context = LocalContext.current)
+        .data(photos.imgSrc)
+        .crossfade(true)
+        .build(),
+      contentDescription = stringResource(R.string.mars_photo),
+      contentScale = ContentScale.Crop,
+      error = painterResource(R.drawable.ic_broken_image),
+      placeholder = painterResource(R.drawable.loading_img),
+      modifier = Modifier.fillMaxWidth()
+    )
+  }
+}
+
+@Composable
+fun PhotosGridScreen(
+  photos: List<MarsPhoto>,
+  modifier: Modifier = Modifier,
+  contentPadding: PaddingValues = PaddingValues(0.dp),
+) {
+  LazyVerticalGrid(
+    columns = GridCells.Adaptive(150.dp),
+    modifier = modifier.padding(horizontal = 4.dp),
+    contentPadding = contentPadding,
+  ) {
+    items(items = photos, key = { photo -> photo.id }) { photo ->
+      MarsPhotoCard(
+        photo,
+        modifier = modifier
+          .padding(4.dp)
+          .fillMaxWidth()
+          .aspectRatio(1.5f)
+      )
+    }
+  }
 }
 ```
+
+### Persist Data with Room
+
+- [Room](https://developer.android.com/training/data-storage/room) is a persistence library that's part of Android [Jetpack](https://developer.android.com/jetpack/androidx/explorer?case=data)
+
+- Room is an abstraction layer on top of a [SQLite](https://developer.android.com/training/data-storage/sqlite) database
+  - Room simplifies the chores of database setup, configuration, and interactions with the app
+  - Room also provides compile-time checks of SQLite statements
+
+- Room is the data source in the image below:
+
+![](/assets/google-android-training-courses/ui_layer_and_data_layer.png)
+
+- Room components:
+  - [Room entities](https://developer.android.com/training/data-storage/room/defining-data)
+    - Represent tables in your app's database
+    - Use to update the data stored in rows in tables and to create new rows for insertion
+  - [Room DAOs](https://developer.android.com/training/data-storage/room/accessing-data)
+    - Provide methods that your app uses to retrieve, update, insert, and delete data in the database
+  - [Room Database](https://developer.android.com/reference/kotlin/androidx/room/Database)
+    - Provides your app with instances of the DAOs associated with that database
+
+![](/assets/google-android-training-courses/room_components.png)
+
+#### Item Entity
+
+- An **Entity class** defines a table, and each instance of this class represents a **row** in the database table
+
+- The `@Entity` annotation marks a class as a database Entity class
+  - For each Entity class, the app creates a database table to hold the items
+  - Each field of the Entity is represented as a column in the database, unless denoted otherwise
+
+- eg.
+
+```kt
+/**
+ * Entity data class represents a single row in the database.
+ */
+@Entity(tableName = "items")
+data class Item(
+  @PrimaryKey(autoGenerate = true)
+  val id: Int = 0,
+  val name: String,
+  val price: Double,
+  val quantity: Int
+)
+```
+
