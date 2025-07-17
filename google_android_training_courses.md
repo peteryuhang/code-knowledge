@@ -2316,3 +2316,37 @@ interface ItemDao {
   fun getAllItems(): Flow<Item>
 }
 ```
+
+#### Database Instance
+
+- The **Database class** provides your app with **instances of the DAOs** you define
+
+- eg.
+
+```kt
+// Whenever you change the schema of the database table, you have to increase the version number
+// Set exportSchema to false so as not to keep schema version history backups
+@Database(entities = [Item::class], version = 1, exportSchema = false)
+abstract class InventoryDatabase : RoomDatabase() {
+  abstract fun itemDao() : ItemDao
+
+  // Allows access to the methods to create or get the database and uses the class name as the qualifier
+  companion object {
+    // The value of a volatile variable is never cached, and all reads and writes are to and from the main memory
+    // These features help ensure the value of Instance is always up to date and is the same for all execution threads
+    // Changes made by one thread to Instance are immediately visible to all other threads
+    @Volatile
+    private var Instance: InventoryDatabase? = null
+
+    fun getDatabase(context: Context): InventoryDatabase {
+      // makes sure the database only gets initialized once
+      return Instance ?: synchronized(this) {
+        Room.databaseBuilder(context, InventoryDatabase::class.java, "item_database")  
+          .fallbackToDestructiveMigration()
+          .build()
+          .also { Instance = it }
+      }
+    }
+  }
+}
+```
