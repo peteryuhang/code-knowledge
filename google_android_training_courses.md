@@ -2350,3 +2350,34 @@ abstract class InventoryDatabase : RoomDatabase() {
   }
 }
 ```
+
+### Read and update data with Room
+
+- Getting data from a flow is called collecting from a flow:
+  - **Lifecycle change** causes recomposition and collecting from your Flow all over again
+  - You want the values to be cached as state so that existing data isn't lost between lifecycle events
+  - Flows should be canceled if there's no observers left, such as after a composable's lifecycle ends
+  - The recommended way to expose a Flow from a `ViewModel` is with a `StateFlow`
+    - Using a StateFlow allows the data to be saved and observed, regardless of the UI lifecycle
+    - To convert a Flow to a StateFlow, you use the `stateIn` operator
+
+- eg.
+
+```kt
+/**
+ * ViewModel to retrieve all items in the Room database.
+ */
+class HomeViewModel(itemsRepository: ItemsRepository) : ViewModel() {
+  val homeUiState: StateFlow<HomeUiState> =
+    itemsRepository.getAllItemsStream().map { HomeUiState(it) }
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = HomeUiState(),
+      )
+
+  companion object {
+    private const val TIMEOUT_MILLIS = 5_000L
+  }
+}
+```
