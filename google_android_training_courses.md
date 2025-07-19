@@ -2381,3 +2381,40 @@ class HomeViewModel(itemsRepository: ItemsRepository) : ViewModel() {
   }
 }
 ```
+
+### Preferences DataStore
+
+- The DataStore Jetpack Component is a great way to store small and simple data sets with low overhead
+
+- Preferences DataStore stores **key-value pairs**
+
+- eg.
+
+```kt
+class UserPreferencesRepository(
+  private val dataStore: DataStore<Preferences>
+) {
+  private companion object {
+    val IS_LINEAR_LAYOUT = booleanPreferencesKey("is_linear_layout")
+    const val TAG = "UserPreferencesRepo"
+  }
+
+  var isLinearLayout: Flow<Boolean> = dataStore.data
+    .catch {
+      if (it is IOException) {
+        Log.e(TAG, "Error reading preferences.", it)
+        emit(emptyPreferences())
+      } else {
+        throw it
+      }
+    }.map { preferences ->
+      preferences[IS_LINEAR_LAYOUT] ?: true
+    }
+
+  suspend fun saveLayoutPreference(isLinearLayout: Boolean) {
+    dataStore.edit { preferences ->
+        preferences[IS_LINEAR_LAYOUT] = isLinearLayout
+    }
+  }
+}
+```
