@@ -2421,4 +2421,29 @@ class UserPreferencesRepository(
 
 ### WorkManager
 
+- WorkManager is part of Android Jetpack and an Architecture Component for background work that needs a combination of **opportunistic** and **guaranteed** execution:
+  - **Opportunistic execution**: WorkManager does your background work as soon as it can
+  - **Guaranteed execution**: WorkManager takes care of the logic to start your work under a variety of situations, even if you navigate away from your app
 
+- The running of WorkManager tasks is not dependent on the app continuing to run after the work is enqueued
+
+- Some examples of tasks that are a good use of WorkManager:
+  - Periodically querying for latest news stories
+  - Applying filters to an image and then saving the image
+  - Periodically syncing local data with the network
+
+- WorkManager classes:
+  - `Worker`/`CoroutineWorker`: 
+    - Worker is a class that performs work **synchronously** on a background thread
+    - CoroutineWorker is a class that performs work **asynchronously** on a background thread
+    - The code for the actual work you want to perform in the background been put in `doWork()` method
+  - `WorkRequest`:
+    - Represents a **request** to do some work
+    - Define if the worker needs to be run once or periodically
+    - [Constraints](https://developer.android.com/reference/androidx/work/Constraints.html) can also be placed on the WorkRequest that require certain conditions are met before the work runs
+    - eg. device is charging before starting the requested work
+  - `WorkManager`:
+    - Schedules your `WorkRequest` and makes it run
+    - It schedules a WorkRequest in a way that spreads out the load on system resources, while honoring the constraints you specify
+
+- Event Flow: `WorkManager` -> `WorkRequest` -> `Work/CoroutineWorker`
