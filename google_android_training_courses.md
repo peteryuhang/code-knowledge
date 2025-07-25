@@ -2447,3 +2447,44 @@ class UserPreferencesRepository(
     - It schedules a WorkRequest in a way that spreads out the load on system resources, while honoring the constraints you specify
 
 - Event Flow: `WorkManager` -> `WorkRequest` -> `Work/CoroutineWorker`
+
+- WorkManager lets you create separate WorkerRequests that run in order or in parallel
+
+### Views
+
+- When building an app with `Views`, the layout of UI are typically declareed using XML
+
+- eg.
+
+```kt
+class EntryDialogFragment : BottomSheetDialogFragment() {
+
+  private val entryViewModel by viewModels<EntryViewModel> { AppViewModelProvider.Factory }
+  val selectedColor: JuiceColor = JuiceColor.Red
+
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View {
+    return FragmentEntryDialogBinding.inflate(inflater, container, false).root
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    val binding = FragmentEntryDialogBinding.bind(view)
+    val args: EntryDialogFragmentArgs by navArgs()
+    val juiceId = args.itemId
+
+    binding.saveButton.setOnClickListener {
+      entryViewModel.saveJuice(
+        juiceId,
+        binding.name.text.toString(),
+        binding.description.text.toString(),
+        selectedColor.name,
+        binding.ratingBar.rating.toInt()
+      )
+      dismiss()
+    }
+  }
+}
+```
